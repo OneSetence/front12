@@ -49,9 +49,6 @@ class _MyWidget extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('바텀시트'),
-      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

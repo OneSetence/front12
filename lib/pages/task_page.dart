@@ -5,8 +5,39 @@ class TaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('할 일'),
+    return DefaultTabController(
+      initialIndex:1,
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: const TabBar(
+            tabs: <Widget>[
+              Tab(
+                child: Text("시작 전"),
+              ),
+              Tab(
+                child: Text('진행중'),
+              ),
+              Tab(
+                child: Text('마감'),
+              ),
+            ],
+          ),
+        ),
+        body: const TabBarView(
+          children: <Widget> [
+            Center (
+              child: Text('시작 전입니다.'),
+            ),
+            Center(
+              child: Text('진행중입니다.'),
+            ),
+            Center(
+              child: Text('마감된 페이지입니다.')
+            ),
+          ],
+        )
+      )
     );
   }
 }
