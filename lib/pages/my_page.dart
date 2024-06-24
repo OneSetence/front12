@@ -34,7 +34,7 @@ class MyPageMain extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '서예ㅇㅇㅇㅇ진',
+                    '서예진',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text('Seoyejin@naver.com'),
