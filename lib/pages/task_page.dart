@@ -16,6 +16,19 @@ List<ScheduleCard> start_task = [
 List<ScheduleCard> ing_task = [
   ScheduleCard(startTime: 121, endTime: 124, content: '진행중인데 어쩔래', state: '진행중'),
   ScheduleCard(startTime: 123, endTime: 134, content: '와와와왕', state: '진행중'),
+  ScheduleCard(startTime: 121, endTime: 124, content: '안녕', state: '진행중'),
+  ScheduleCard(startTime: 123, endTime: 134, content: '하지못해', state: '진행중'),
+  ScheduleCard(startTime: 121, endTime: 124, content: '미안해', state: '진행중'),
+  ScheduleCard(startTime: 123, endTime: 134, content: '하지않아', state: '진행중'),
+  ScheduleCard(startTime: 121, endTime: 124, content: '드라마 볼래', state: '진행중'),
+  ScheduleCard(startTime: 123, endTime: 134, content: '테스트', state: '진행중'),
+  ScheduleCard(startTime: 121, endTime: 124, content: '래미콘', state: '진행중'),
+  ScheduleCard(startTime: 123, endTime: 134, content: '우아랑ㄴㄹ', state: '진행중'),
+  ScheduleCard(startTime: 121, endTime: 124, content: 'ㅇㅇㅇㅇ', state: '진행중'),
+  ScheduleCard(startTime: 123, endTime: 134, content: '깅거해', state: '진행중'),
+  ScheduleCard(startTime: 121, endTime: 124, content: '오늘의', state: '진행중'),
+  ScheduleCard(startTime: 123, endTime: 134, content: '행복을', state: '진행중'),
+
 ];
 
 List<ScheduleCard> end_task = [
