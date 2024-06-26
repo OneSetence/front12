@@ -5,11 +5,14 @@ class ScheduleCard extends StatelessWidget {
   final int startTime;
   final int endTime;
   final String content;
+  final String state;
+
 
   const ScheduleCard({
     required this.startTime,
     required this.endTime,
     required this.content,
+    required this.state,
     Key? key,
   }) : super(key: key);
 
@@ -41,6 +44,9 @@ class ScheduleCard extends StatelessWidget {
                 content: content,
               ),
               SizedBox(width: 16.0),
+              _Content(
+                  content: state,
+              )
             ],
           ),
         ),
@@ -55,6 +61,7 @@ class ScheduleCard extends StatelessWidget {
 class _Time extends StatelessWidget {
   final int startTime;
   final int endTime;
+
 
   const _Time({
     required this.startTime,
@@ -92,7 +99,8 @@ class _Time extends StatelessWidget {
 class _Content extends StatelessWidget {
   final String content;
 
-  const _Content({
+
+   const _Content({
     required this.content,
     Key? key,
   }) : super (key: key);

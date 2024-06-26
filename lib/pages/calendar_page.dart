@@ -22,11 +22,11 @@ class _CalendarState extends State<CalendarPage> {
   // 일정 데이터를 저장할 Map
   Map<DateTime, List<ScheduleCard>> schedules = {
   DateTime.utc(2024, 5, 18): [
-    ScheduleCard(startTime: 12, endTime: 14, content: 'Meeting with Team A'),
-    ScheduleCard(startTime: 16, endTime: 17, content: 'Dentist appointment'),
+    ScheduleCard(startTime: 12, endTime: 14, content: 'Meeting with Team A', state: '시작 전'),
+    ScheduleCard(startTime: 16, endTime: 17, content: 'Dentist appointment', state: '시작 전'),
     ],
   DateTime.utc(2024, 5, 19): [
-    ScheduleCard(startTime: 10, endTime: 11, content: 'Conference call'),
+    ScheduleCard(startTime: 10, endTime: 11, content: 'Conference call', state: '시작 전'),
     ],
   };
 
@@ -46,6 +46,7 @@ class _CalendarState extends State<CalendarPage> {
               startTime: schedule.startTime,
               endTime: schedule.endTime,
               content: schedule.content,
+              state: schedule.state,
             )).toList(),
           ],
         ),
