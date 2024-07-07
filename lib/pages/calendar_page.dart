@@ -3,6 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import '../component/main_calendar.dart';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
+import '../component/schedule_bottom_sheet.dart';
+
 
 
 class CalendarPage extends StatefulWidget {
@@ -22,12 +24,21 @@ class _CalendarState extends State<CalendarPage> {
   // 일정 데이터를 저장할 Map
   Map<DateTime, List<ScheduleCard>> schedules = {
   DateTime.utc(2024, 5, 18): [
-    ScheduleCard(startTime: 12, endTime: 14, content: 'Meeting with Team A', state: '시작 전'),
-    ScheduleCard(startTime: 16, endTime: 17, content: 'Dentist appointment', state: '시작 전'),
-    ],
-  DateTime.utc(2024, 5, 19): [
-    ScheduleCard(startTime: 10, endTime: 11, content: 'Conference call', state: '시작 전'),
-    ],
+    ScheduleCard(
+        start_year: 2024,
+        start_month: 123,
+        start_day: 123,
+        start_hour: 1,
+        start_minutes: 3,
+        end_year: 2022,
+        end_month: 3,
+        end_day: 1,
+        end_hour: 3,
+        end_minutes: 3,
+        content: '예지니랑 테니스하기',
+        state: '시작 전'
+    ),
+    ]
   };
 
   @override
@@ -35,6 +46,19 @@ class _CalendarState extends State<CalendarPage> {
     List<ScheduleCard> selectedSchedules = schedules[selectedDate] ?? [];
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: main_color,
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isDismissible: true,
+            builder: (_) => ScheduleBottomSheet(),
+          );
+        },
+        child: Icon(
+          Icons.add,
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -43,8 +67,16 @@ class _CalendarState extends State<CalendarPage> {
               onDaySelected: onDaySelected,
             ),
             ...selectedSchedules.map((schedule) => ScheduleCard(
-              startTime: schedule.startTime,
-              endTime: schedule.endTime,
+              start_year: schedule.start_year,
+              start_month: schedule.start_month,
+              start_day: schedule.start_day,
+              start_hour: schedule.start_hour,
+              start_minutes: schedule.start_minutes,
+              end_year: schedule.end_year,
+              end_month: schedule.end_month,
+              end_day: schedule.end_day,
+              end_hour: schedule.end_hour,
+              end_minutes: schedule.end_minutes,
               content: schedule.content,
               state: schedule.state,
             )).toList(),

@@ -2,19 +2,59 @@ import 'package:flutter/material.dart';
 import '../const/colors.dart';
 
 class ScheduleCard extends StatelessWidget {
-  final int startTime;
-  final int endTime;
+  final int start_year;
+  final int start_month;
+  final int start_day;
+  final int start_hour;
+  final int start_minutes;
+
+  final int end_year;
+  final int end_month;
+  final int end_day;
+  final int end_hour;
+  final int end_minutes;
+
   final String content;
   final String state;
 
 
   const ScheduleCard({
-    required this.startTime,
-    required this.endTime,
+    required this.start_year,
+    required this.start_month,
+    required this.start_day,
+    required this.start_hour,
+    required this.start_minutes,
+    required this.end_year,
+    required this.end_month,
+    required this.end_day,
+    required this.end_hour,
+    required this.end_minutes,
     required this.content,
     required this.state,
     Key? key,
   }) : super(key: key);
+
+  factory ScheduleCard.fromJson(Map<String, dynamic> json) {
+
+    String state = json['status'];
+    if (state == 'TODO') {
+      state = '시작';
+    }
+    return ScheduleCard(
+      start_year: json['start'][0],
+      start_month: json['start'][1],
+      start_day: json['start'][2],
+      start_hour: json['start'][3],
+      start_minutes: json['start'][4],
+      end_year: json['end'][0],
+      end_month: json['end'][1],
+      end_day: json['end'][2],
+      end_hour: json['end'][3],
+      end_minutes: json['end'][4],
+      content: json['title'],
+      state: state,
+    );
+  }
 
 
   @override
@@ -36,10 +76,9 @@ class ScheduleCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _Time(
-                startTime: startTime,
-                endTime: endTime,
+                startTime: start_month.toString() + '월 ' + start_day.toString() + '일 ',
+                endTime: end_month.toString() + '월 ' + end_day.toString() + '일'
               ),
-              SizedBox(width: 16.0),
               _Content(
                 content: content,
               ),
@@ -59,8 +98,8 @@ class ScheduleCard extends StatelessWidget {
 
 
 class _Time extends StatelessWidget {
-  final int startTime;
-  final int endTime;
+  final String startTime;
+  final String endTime;
 
 
   const _Time({
@@ -81,11 +120,11 @@ class _Time extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${startTime.toString().padLeft(2, '0')}:00',
+          '${startTime.toString()}',
           style: textStyle,
         ),
         Text(
-          '${endTime.toString().padLeft(2,'0')}:00',
+          '${endTime.toString()}',
           style: textStyle.copyWith(
           fontSize: 10.0,
           ),

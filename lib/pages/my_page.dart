@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MyPage extends StatelessWidget {
   MyPage({Key? key}) : super(key: key);
@@ -12,7 +14,6 @@ class MyPage extends StatelessWidget {
     );
   }
 }
-
 
 class MyPageMain extends StatelessWidget {
   @override
@@ -55,7 +56,7 @@ class MyPageMain extends StatelessWidget {
             ],
           ),
           SizedBox(height: 32),
-          MenuOption(title: '카테고리 설정하러 가기'),
+          MenuOption(title: '카테고리 설정하러 가기', onTap: _sendPostRequest),
           MenuOption(title: '개인정보처리방침'),
           MenuOption(title: '서비스 이용약관'),
           MenuOption(title: '로그아웃'),
@@ -65,21 +66,37 @@ class MyPageMain extends StatelessWidget {
       ),
     );
   }
+
+  void _sendPostRequest() async {
+    final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
+    final headers = {"Content-Type": "application/json"};
+    final body = json.encode({"text": "서예지니니니니닌."});
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print('Success: ${response.body}');
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception: $e');
+    }
+  }
 }
 
 class MenuOption extends StatelessWidget {
   final String title;
+  final Function()? onTap;
 
-  MenuOption({required this.title});
+  MenuOption({required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
       trailing: Icon(Icons.arrow_forward_ios),
-      onTap: () {
-        // Handle tap event
-      },
+      onTap: onTap,
     );
   }
 }
