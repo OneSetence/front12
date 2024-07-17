@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:han_final/pages/practice.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -16,8 +17,22 @@ class MyPage extends StatelessWidget {
 }
 
 class MyPageMain extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
+    void leedong() {
+      Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+          builder: (_) => NextScreen(),
+        ),
+      );
+
+      //Navigator.push(
+        //context,
+        //MaterialPageRoute(builder: (context) => const NextScreen()),
+      //);
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -57,7 +72,10 @@ class MyPageMain extends StatelessWidget {
           ),
           SizedBox(height: 32),
           MenuOption(title: '카테고리 설정하러 가기', onTap: _sendPostRequest),
-          MenuOption(title: '개인정보처리방침'),
+          MenuOption(
+              title: '개인정보처리방침',
+              onTap: leedong,
+          ),
           MenuOption(title: '서비스 이용약관'),
           MenuOption(title: '로그아웃'),
           MenuOption(title: '회원탈퇴'),
@@ -66,6 +84,9 @@ class MyPageMain extends StatelessWidget {
       ),
     );
   }
+
+
+
 
   void _sendPostRequest() async {
     final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
