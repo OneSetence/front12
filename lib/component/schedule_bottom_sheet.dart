@@ -5,6 +5,7 @@ import '../component/progress_dropdown.dart';
 import '../component/category_dropdown.dart';
 
 
+
 class ScheduleBottomSheet extends StatefulWidget {
   const ScheduleBottomSheet({Key? key}) : super(key: key);
 
@@ -42,10 +43,21 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                   ),
                 ],
               ),
+
+              SizedBox(height: 20),
+              Container(
+                  alignment: Alignment.topLeft ,
+                  child: Text('진행상태')
+              ),
               SizedBox(height: 8),
               Container(
                 height: 50,
                 child: ProgressDropdown(),
+              ),
+              SizedBox(height: 20),
+              Container(
+                alignment: Alignment.topLeft ,
+                child: Text('카테고리')
               ),
               Container(
                 height: 50,
