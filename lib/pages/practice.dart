@@ -13,7 +13,9 @@ class NextScreen extends StatelessWidget {
       body:Center(
         child: ElevatedButton(
           child: const Text('돌아가기'),
-          onPressed: (){},
+          onPressed: (){
+            Navigator.pop(context);
+          },
         ),
       ),
     );
