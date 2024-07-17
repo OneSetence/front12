@@ -53,6 +53,7 @@ class _CalendarState extends State<CalendarPage> {
             context: context,
             isDismissible: true,
             builder: (_) => ScheduleBottomSheet(),
+            isScrollControlled: true,
           );
         },
         child: Icon(
