@@ -1,45 +1,8 @@
 import 'package:flutter/material.dart';
 import '../component/custom_text_field.dart';
 import '../const/colors.dart';
-
-const List<String> list = <String>['시작전', '진행중,', '완료'];
-
-class DropdownButtonExample extends StatefulWidget {
-  const DropdownButtonExample({super.key});
-
-  @override
-  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
-}
-
-class _DropdownButtonExampleState extends State<DropdownButtonExample> {
-  String dropdownValue = list.first;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon : const Icon(Icons.arrow_downward),
-      elevation: 10,
-      style: const TextStyle(color: Colors.deepPurple),
-      //underline: Container(
-        //height: 2,
-        //color: Colors.deepPurpleAccent,
-
-      //),
-      onChanged: (String? value){
-        setState(() {
-          dropdownValue = value!;
-        });
-      },
-      items: list.map<DropdownMenuItem<String>>((String value){
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-}
+import '../component/progress_dropdown.dart';
+import '../component/category_dropdown.dart';
 
 
 class ScheduleBottomSheet extends StatefulWidget {
@@ -56,7 +19,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
 
     return SafeArea(
       child: Container(
-        height: MediaQuery.of(context).size.height / 2 + bottomInset,
+        height: MediaQuery.of(context).size.height / 1.5 + bottomInset,
         color: Colors.white,
         child: Padding(
           padding : EdgeInsets.only(left: 8, right : 8, top: 8, bottom: bottomInset),
@@ -66,14 +29,14 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      label: '시작 시간',
+                      label: '시작일',
                       isTime: true,
                     ),
                   ),
                   const SizedBox(width:16.0),
                   Expanded(
                     child: CustomTextField(
-                      label: '종료 시간',
+                      label: '종료일',
                       isTime: true,
                     ),
                   ),
@@ -82,7 +45,11 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
               SizedBox(height: 8),
               Container(
                 height: 50,
-                child: DropdownButtonExample(),
+                child: ProgressDropdown(),
+              ),
+              Container(
+                height: 50,
+                child: CategroyDropdown(),
               ),
               SizedBox(height: 8.0),
               Expanded(
