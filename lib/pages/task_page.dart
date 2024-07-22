@@ -56,13 +56,28 @@ class _TaskPageState extends State<TaskPage> {
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
-                child: Text('시작 전'),
+                child: Text(
+                    '시작 전',
+                    style: TextStyle(
+                      color: blue_01,
+                    ),
+                ),
               ),
               Tab(
-                child: Text('진행중'),
+                child: Text(
+                    '진행중',
+                    style: TextStyle(
+                      color: blue_01,
+                    ),
+                ),
               ),
               Tab(
-                child: Text('마감'),
+                child: Text(
+                    '마감',
+                    style: TextStyle(
+                      color: blue_01,
+                    ),
+                ),
               ),
             ],
           ),

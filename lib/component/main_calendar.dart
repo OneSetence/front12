@@ -44,7 +44,7 @@ class MainCalendar extends StatelessWidget {
         selectedDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6.0),
           border: Border.all(
-            color:main_color,
+            color:blue_01,
             width: 1.0,
           ),
         ),
@@ -58,7 +58,7 @@ class MainCalendar extends StatelessWidget {
         ),
         selectedTextStyle: TextStyle(
           fontWeight: FontWeight.w600,
-          color: main_color,
+          color: blue_01,
         ),
       ),
     );
