@@ -3,8 +3,11 @@ import 'pages/task_page.dart';
 import 'pages/my_page.dart';
 import 'pages/calendar_page.dart';
 import '../const/colors.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting();
   runApp(const MyApp());
 }
 

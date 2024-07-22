@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../component/main_calendar.dart';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-
 
 class TaskPage extends StatefulWidget {
   TaskPage({Key? key}) : super(key: key);
@@ -15,19 +12,17 @@ class TaskPage extends StatefulWidget {
   _TaskPageState createState() => _TaskPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin {
   List<ScheduleCard> startTask = [];
-  List<ScheduleCard> ingTask = [
-    // 나머지 항목들 생략
-  ];
-  List<ScheduleCard> endTask = [
-
-  ];
+  List<ScheduleCard> ingTask = [];
+  List<ScheduleCard> endTask = [];
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     fetchTasks();
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   Future<void> fetchTasks() async {
@@ -39,51 +34,84 @@ class _TaskPageState extends State<TaskPage> {
         startTask = jsonResponse.map((task) => ScheduleCard.fromJson(task)).toList();
       });
     } else {
-      throw Exception('Failed to load tasksddddd');
+      throw Exception('Failed to load tasks');
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    final _selectedColor = Color(0xff1a73e8);
+    final _unselectedColor = Color(0xff5f6368);
+
+    return DefaultTabController(
       initialIndex: 1,
       length: 3,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          bottom: const TabBar(
-            tabs: <Widget>[
-              Tab(
-                child: Text(
-                    '시작 전',
-                    style: TextStyle(
-                      color: blue_01,
-                    ),
-                ),
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight - 8.0),
+            child: Container(
+              height: kToolbarHeight - 8.0,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(8.0),
               ),
-              Tab(
-                child: Text(
-                    '진행중',
-                    style: TextStyle(
-                      color: blue_01,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TabBar(
+                      controller: _tabController,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: _selectedColor,
+                      ),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.black,
+                      tabs: [
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              '시작 전',
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              '진행중',
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              '마감',
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                ),
+                  ),
+                ],
               ),
-              Tab(
-                child: Text(
-                    '마감',
-                    style: TextStyle(
-                      color: blue_01,
-                    ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
         body: TabBarView(
-
+          controller: _tabController,
           children: <Widget>[
             ListView.builder(
               itemCount: startTask.length,
