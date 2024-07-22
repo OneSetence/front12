@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/task_page.dart';
 import 'pages/my_page.dart';
 import 'pages/calendar_page.dart';
+import '../const/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +56,7 @@ class _MyWidget extends State<MyWidget> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFFFFFFFF),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Image.asset("images/bottomBar/task_nonactive.png"),
@@ -75,6 +77,8 @@ class _MyWidget extends State<MyWidget> {
         ],
 
         currentIndex: _selectedIndex,
+        selectedItemColor: Color(0xFF0094FF), // 선택된 항목의 라벨 색상
+        unselectedItemColor: Color(0xFFACACAC),
         onTap: _onItemTapped,
       ),
     );

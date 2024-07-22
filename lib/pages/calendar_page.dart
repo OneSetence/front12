@@ -62,6 +62,7 @@ class _CalendarState extends State<CalendarPage> {
             alignment: Alignment(
               Alignment.bottomRight.x, Alignment.bottomRight.y-0.2),
             child: FloatingActionButton(
+              backgroundColor: blue_01,
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
@@ -70,15 +71,23 @@ class _CalendarState extends State<CalendarPage> {
                   isScrollControlled: true,
                 );
               },
-              child: Icon(Icons.add),
+              child: Icon(
+                  Icons.add,
+                  color: white_01,
+              ),
             ),
           ),
+          SizedBox(height: 10),
           Align(
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
+              backgroundColor: blue_01,
               onPressed: text_enroll,
               tooltip: "문장 등록",
-              child: Icon(Icons.edit),
+              child: Icon(
+                  Icons.edit,
+                  color: white_01,
+              ),
             ),
           ),
         ],

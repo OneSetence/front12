@@ -23,10 +23,8 @@ class _WorkloadPageState extends State<WorkloadPage> {
   }
 
   void calender_main() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => CalendarPage(),
-    ),
-    );
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
