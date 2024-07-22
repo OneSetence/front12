@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../const/colors.dart';
+import 'package:han_final/pages/calendar_page.dart';
 
 class WorkloadPage extends StatefulWidget {
   @override
@@ -12,13 +14,19 @@ class _WorkloadPageState extends State<WorkloadPage> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
+  }
+
+  void calender_main() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => CalendarPage(),
+    ),
+    );
   }
 
   @override
@@ -44,40 +52,63 @@ class _WorkloadPageState extends State<WorkloadPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.all(16.0), // TextField에 패딩 적용
-              child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                  hintText: '한 문장으로 일정을 등록할 수 있어요!',
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
+              child: Column(
+                children: [
+                  Center(
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      keyboardType: TextInputType.number, // 숫자 키패드 설정
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
+                      ],
+                      textAlign: TextAlign.center, // 텍스트를 가운데 정렬
+                      decoration: InputDecoration(
+                        hintText: '작업량을 입력해주세요!',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        counterText: '', // 기본 카운터 텍스트 제거
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: white_01),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: white_01),
+                        ),
+                      ),
+                      maxLength: 30,
+                    ),
                   ),
-                  counterText: '20/30',
-                  counterStyle: TextStyle(color: Colors.grey),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: white_01),
+                  SizedBox(height: 60),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '숫자만 입력 가능합니다',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.purple),
-                  ),
-                ),
-                maxLength: 30,
+                ],
               ),
             ),
             Spacer(),
             SizedBox(
               width: double.infinity, // 가로로 최대 너비 설정
               child: ElevatedButton(
-                onPressed:() {},
+                onPressed: () {
+                  // 서버 요청 API 연동
+
+                  // 완료 후 캘린더 main 페이지로 이동
+                  calender_main();
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: blue_01, // 보라색 버튼
+                  backgroundColor: blue_01, // 버튼 배경색 설정
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
                   ),
-                  //padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: Size(double.infinity, 50), // 버튼 크기 설정
                 ),
                 child: Text(
                   '완료',
@@ -93,7 +124,4 @@ class _WorkloadPageState extends State<WorkloadPage> {
       ),
     );
   }
-  // 서버 요청 함수
-
-  // 다음 페이지 이동 함수
 }

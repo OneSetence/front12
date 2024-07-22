@@ -73,7 +73,11 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: onSavePressed,
+                  onPressed: () {
+                    // 서버에 보낼 함수 API 연동
+                    onSavePressed;
+
+                  },
                   style: ElevatedButton.styleFrom(
                       foregroundColor: main_color,
                   ),
@@ -87,6 +91,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     );
   }
 
+  // 서버에 전송
   void onSavePressed() {
 
   }
