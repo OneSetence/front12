@@ -8,15 +8,11 @@ class NextScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.redAccent,
-      body:Center(
-        child: ElevatedButton(
-          child: const Text('돌아가기'),
-          onPressed: (){
-            Navigator.pop(context);
-          },
-        ),
+    return Container(
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+        }
       ),
     );
   }

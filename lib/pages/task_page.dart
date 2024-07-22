@@ -46,10 +46,13 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+
       initialIndex: 1,
       length: 3,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -65,6 +68,7 @@ class _TaskPageState extends State<TaskPage> {
           ),
         ),
         body: TabBarView(
+
           children: <Widget>[
             ListView.builder(
               itemCount: startTask.length,

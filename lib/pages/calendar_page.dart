@@ -4,6 +4,8 @@ import '../component/main_calendar.dart';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
 import '../component/schedule_bottom_sheet.dart';
+import 'dart:convert';
+import 'package:han_final/pages/text_add.dart';
 
 
 
@@ -44,24 +46,48 @@ class _CalendarState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     List<ScheduleCard> selectedSchedules = schedules[selectedDate] ?? [];
+    //문장 등록
+    void text_enroll() {
+      Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+        builder: (_) => TextAdd(),
+      ),
+      );
+    }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: main_color,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isDismissible: true,
-            builder: (_) => ScheduleBottomSheet(),
-            isScrollControlled: true,
-          );
-        },
-        child: Icon(
-          Icons.add,
-        ),
+      backgroundColor: Colors.white,
+      floatingActionButton: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment(
+              Alignment.bottomRight.x, Alignment.bottomRight.y-0.2),
+            child: FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isDismissible: true,
+                  builder: (_) => ScheduleBottomSheet(),
+                  isScrollControlled: true,
+                );
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              onPressed: text_enroll,
+              tooltip: "문장 등록",
+              child: Icon(Icons.edit),
+            ),
+          ),
+        ],
       ),
+
       body: SafeArea(
+
         child: Column(
+
           children: [
             MainCalendar(
               selectedDate: selectedDate,
