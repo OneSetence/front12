@@ -2,23 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../const/colors.dart';
-import 'package:han_final/pages/workload_page.dart';
 
-class TextAdd extends StatefulWidget {
+class WorkloadPage extends StatefulWidget {
   @override
-  _TextAddState createState() => _TextAddState();
+  _WorkloadPageState createState() => _WorkloadPageState();
 }
 
-class _TextAddState extends State<TextAdd> {
+class _WorkloadPageState extends State<WorkloadPage> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
-  void workload_enter() {
-    Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-      builder: (_) => WorkloadPage(),
-    ),
-    );
-  }
 
   @override
   void initState() {
@@ -77,12 +70,7 @@ class _TextAddState extends State<TextAdd> {
             SizedBox(
               width: double.infinity, // 가로로 최대 너비 설정
               child: ElevatedButton(
-                onPressed: () {
-                  //서버 요청 함수 호출
-                  //_sendPostRequest();
-                  // 다음 페이지 이동
-                  workload_enter();
-                },
+                onPressed:() {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue_01, // 보라색 버튼
                   shape: RoundedRectangleBorder(
@@ -92,7 +80,7 @@ class _TextAddState extends State<TextAdd> {
                   minimumSize: Size(double.infinity, 50),
                 ),
                 child: Text(
-                  '다음',
+                  '완료',
                   style: TextStyle(
                     fontSize: 16,
                     color: white_01,
@@ -105,26 +93,7 @@ class _TextAddState extends State<TextAdd> {
       ),
     );
   }
+  // 서버 요청 함수
 
-// 서버에 문장 보내기
-  void _sendPostRequest() async {
-    final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
-    final headers = {"Content-Type": "application/json"};
-    final body = json.encode({"text": "서예지니니니니닌."});
-
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-      if (response.statusCode == 200) {
-        print('Success: ${response.body}');
-      } else {
-        print('Error: ${response.statusCode}');
-      }
-    } catch
-    (e) {
-      print('Exception: $e');
-    }
-  }
-
-
+  // 다음 페이지 이동 함수
 }
-
