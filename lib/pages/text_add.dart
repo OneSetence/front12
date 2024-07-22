@@ -69,9 +69,7 @@ class _TextAddState extends State<TextAdd> {
             SizedBox(
               width: double.infinity, // 가로로 최대 너비 설정
               child: ElevatedButton(
-                onPressed: () {
-                  // Next button action
-                },
+                onPressed: _sendPostRequest,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue_01, // 보라색 버튼
                   shape: RoundedRectangleBorder(
@@ -93,6 +91,25 @@ class _TextAddState extends State<TextAdd> {
         ),
       ),
     );
+  }
+
+// 서버에 문장 보내기
+  void _sendPostRequest() async {
+    final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
+    final headers = {"Content-Type": "application/json"};
+    final body = json.encode({"text": "서예지니니니니닌."});
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print('Success: ${response.body}');
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch
+    (e) {
+      print('Exception: $e');
+    }
   }
 }
 

@@ -88,7 +88,6 @@ class MyPageMain extends StatelessWidget {
 
 
 
-
   void _sendPostRequest() async {
     final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
     final headers = {"Content-Type": "application/json"};
@@ -101,7 +100,8 @@ class MyPageMain extends StatelessWidget {
       } else {
         print('Error: ${response.statusCode}');
       }
-    } catch (e) {
+    } catch
+   (e) {
       print('Exception: $e');
     }
   }
