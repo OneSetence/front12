@@ -29,7 +29,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   }
 
   Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('http://192.168.124.100:48540/api/v1/todos?status=TODO'));
+    final response = await http.get(Uri.parse('http://192.168.124.255:8080/api/v1/todos?status=TODO'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));

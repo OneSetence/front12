@@ -609,7 +609,7 @@ packages:
     source: hosted
     version: "2.2.1"
   platform:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: platform
       sha256: "12220bb4b65720483f8fa9450b4332347737cf8213dd2840d8b2c823e47243ec"

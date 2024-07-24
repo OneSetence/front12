@@ -97,7 +97,7 @@ class MyPageMain extends StatelessWidget {
   }
 
   void _sendPostRequest() async {
-    final url = Uri.parse('http://192.168.124.100:48540/api/v1/texts');
+    final url = Uri.parse('http://192.168.124.255:8080/api/v1/texts');
     final headers = {"Content-Type": "application/json"};
     final body = json.encode({"text": "ㄴㅏ요니 떡볶이 언제왕!!!!!"});
 

@@ -47,6 +47,10 @@ dependencies:
   dropdown_button2: ^2.3.8
   #카카오촉 공유하기
   kakao_flutter_sdk : ^1.1.0
+  #joson_annotation: ^4.0.1
+  #package_info_plus: ^1.0.4
+  platform: ^3.0.0
+
 
 
 dev_dependencies:
