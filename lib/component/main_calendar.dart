@@ -5,10 +5,12 @@ import '../const/colors.dart';
 class MainCalendar extends StatelessWidget {
   final OnDaySelected onDaySelected;
   final DateTime selectedDate;
+  final DateTime focusedDate;
 
   MainCalendar({
     required this.onDaySelected,
     required this.selectedDate,
+    required this.focusedDate,
   });
 
 
@@ -23,7 +25,7 @@ class MainCalendar extends StatelessWidget {
         date.day == selectedDate.day,
       firstDay: DateTime(1800, 1, 1),
       lastDay: DateTime(2050, 1, 1),
-      focusedDay: DateTime.now(),
+      focusedDay: focusedDate,
       headerStyle: HeaderStyle(
         titleCentered: true,
         formatButtonVisible: false,

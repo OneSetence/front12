@@ -63,7 +63,7 @@ class ScheduleCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           width: 1.0,
-          color: main_color,
+          color: blue_01,
         ),
 
         borderRadius: BorderRadius.circular(8.0),
@@ -76,8 +76,8 @@ class ScheduleCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _Time(
-                startTime: start_month.toString() + '월 ' + start_day.toString() + '일 ',
-                endTime: end_month.toString() + '월 ' + end_day.toString() + '일'
+                startTime: start_hour.toString() + '시 ' + start_minutes.toString() + '분  ',
+                endTime: end_hour.toString() + '시 ' + end_minutes.toString() + '분  ',
               ),
               _Content(
                 content: content,
@@ -85,7 +85,7 @@ class ScheduleCard extends StatelessWidget {
               SizedBox(width: 16.0),
               _Content(
                   content: state,
-              )
+              ),
             ],
           ),
         ),
@@ -112,8 +112,8 @@ class _Time extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyle = TextStyle(
       fontWeight: FontWeight.w600,
-      color: main_color,
-      fontSize: 16.0,
+      color: blue_01,
+      fontSize: 15.0,
     );
 
     return Column(
@@ -126,7 +126,7 @@ class _Time extends StatelessWidget {
         Text(
           '${endTime.toString()}',
           style: textStyle.copyWith(
-          fontSize: 10.0,
+          fontSize: 15.0,
           ),
         ),
       ],

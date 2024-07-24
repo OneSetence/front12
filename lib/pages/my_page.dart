@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:han_final/pages/practice.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../const/colors.dart';
 
 class MyPage extends StatelessWidget {
   MyPage({Key? key}) : super(key: key);
@@ -10,6 +11,22 @@ class MyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: white_01,
+        appBar: AppBar(
+          backgroundColor: white_01,
+          title: Text(
+              'My Page',
+              style: TextStyle(fontSize: 17),
+          ), // AppBar의 제목 설정
+          //actions: [
+            //IconButton(
+              //icon: Icon(Icons.settings),
+              //onPressed: () {
+                // 설정 버튼 클릭 시 동작
+              //},
+            //),
+          //],
+        ),
         body: MyPageMain(),
       ),
     );
@@ -17,26 +34,19 @@ class MyPage extends StatelessWidget {
 }
 
 class MyPageMain extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     void leedong() {
       Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-          builder: (_) => NextScreen(),
-        ),
-      );
-
-      //Navigator.push(
-        //context,
-        //MaterialPageRoute(builder: (context) => const NextScreen()),
-      //);
+        builder: (_) => NextScreen(),
+      ));
     }
 
     return Padding(
 
       padding: const EdgeInsets.all(16.0),
       child: Column(
+
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -74,8 +84,8 @@ class MyPageMain extends StatelessWidget {
           SizedBox(height: 32),
           MenuOption(title: '카테고리 설정하러 가기', onTap: _sendPostRequest),
           MenuOption(
-              title: '개인정보처리방침',
-              onTap: leedong,
+            title: '개인정보처리방침',
+            onTap: leedong,
           ),
           MenuOption(title: '서비스 이용약관'),
           MenuOption(title: '로그아웃'),
@@ -86,12 +96,10 @@ class MyPageMain extends StatelessWidget {
     );
   }
 
-
-
   void _sendPostRequest() async {
-    final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
+    final url = Uri.parse('http://192.168.124.100:48540/api/v1/texts');
     final headers = {"Content-Type": "application/json"};
-    final body = json.encode({"text": "서예지니니니니닌."});
+    final body = json.encode({"text": "ㄴㅏ요니 떡볶이 언제왕!!!!!"});
 
     try {
       final response = await http.post(url, headers: headers, body: body);
@@ -100,8 +108,7 @@ class MyPageMain extends StatelessWidget {
       } else {
         print('Error: ${response.statusCode}');
       }
-    } catch
-   (e) {
+    } catch (e) {
       print('Exception: $e');
     }
   }

@@ -23,6 +23,7 @@ class _CategroyDropdowneState extends State<CategroyDropdown> {
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: blue_01),
         ),
         // Add more decoration..
       ),

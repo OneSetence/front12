@@ -4,6 +4,9 @@ import 'dart:convert';
 import '../component/main_calendar.dart';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
+// 일정 순서 추천 페이지 이동을 위한
+import 'package:han_final/pages/task_recommend.dart';
+
 
 class TaskPage extends StatefulWidget {
   TaskPage({Key? key}) : super(key: key);
@@ -26,7 +29,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   }
 
   Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('http://192.168.100.22:8080/api/v1/todos?status=TODO'));
+    final response = await http.get(Uri.parse('http://192.168.124.100:48540/api/v1/todos?status=TODO'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
@@ -44,9 +47,15 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  void task_recommend() {
+    Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+      builder: (_) => TaskRecommend(),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _selectedColor = Color(0xff1a73e8);
+    final _selectedColor = blue_01;
     final _unselectedColor = Color(0xff5f6368);
 
     return DefaultTabController(
@@ -133,6 +142,40 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
             ),
           ],
         ),
+        floatingActionButton: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Positioned(
+              bottom: 20, // 여기서 원하는 만큼의 간격을 조정할 수 있습니다.
+              child: Container(
+                height: 50.0, // 버튼 높이 조정
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    task_recommend();
+                    //_incrementCounter();
+                  },
+                  label: Text(
+                    '일정 순서를 추천 받아요!',
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        color: white_01
+                    ), // 텍스트 크기 조정
+                  ),
+                  icon: Icon(
+                      Icons.thumb_up,
+                      size: 15.0,
+                      color: white_01,
+                  ), // 아이콘 크기 조정
+                  backgroundColor: _selectedColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0), // 원하는 반경 값 설정
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
