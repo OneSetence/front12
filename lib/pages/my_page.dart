@@ -15,7 +15,7 @@ class MyPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: white_01,
           title: Text(
-              'My Page',
+              '마이페이지',
               style: TextStyle(fontSize: 17),
           ), // AppBar의 제목 설정
           //actions: [

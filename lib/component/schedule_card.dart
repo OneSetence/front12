@@ -17,7 +17,6 @@ class ScheduleCard extends StatelessWidget {
   final String content;
   final String state;
 
-
   const ScheduleCard({
     required this.start_year,
     required this.start_month,
@@ -35,7 +34,6 @@ class ScheduleCard extends StatelessWidget {
   }) : super(key: key);
 
   factory ScheduleCard.fromJson(Map<String, dynamic> json) {
-
     String state = json['status'];
     if (state == 'TODO') {
       state = '시작';
@@ -56,7 +54,6 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,48 +62,67 @@ class ScheduleCard extends StatelessWidget {
           width: 1.0,
           color: blue_01,
         ),
-
         borderRadius: BorderRadius.circular(8.0),
       ),
-
-      child:Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _Time(
-                startTime: start_hour.toString() + '시 ' + start_minutes.toString() + '분  ',
-                endTime: end_hour.toString() + '시 ' + end_minutes.toString() + '분  ',
+        child: Column(
+          children: [
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _Time(
+                    startTime: '$start_hour시 $start_minutes분  ',
+                    endTime: '$end_hour시 $end_minutes분  ',
+                  ),
+                  _Content(
+                    content: content,
+                  ),
+                  SizedBox(width: 16.0),
+                  _Content(
+                    content: state,
+                  ),
+                ],
               ),
-              _Content(
-                content: content,
+            ),
+            SizedBox(height: 10.0), // Row들 사이에 공간을 추가
+            IntrinsicHeight(
+              child: Row(
+                children: [
+                  GestureDetector(
+                    // 웹 채팅 부르기
+                    onTap: () {
+
+                      //print('공유 아이콘 클릭됨');
+                    },
+                    child: Icon(
+                      Icons.share,
+                      color: blue_01,
+                      size: 24.0, // 아이콘 크기 조정
+                    ),
+                  ),
+                  //SizedBox(width: 8.0), // 아이콘과 텍스트 사이의 간격 조정
+                  //_AnotherInfo(),
+                ],
               ),
-              SizedBox(width: 16.0),
-              _Content(
-                  content: state,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-
-
-
 class _Time extends StatelessWidget {
   final String startTime;
   final String endTime;
-
 
   const _Time({
     required this.startTime,
     required this.endTime,
     Key? key,
-  }) : super (key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,13 +136,13 @@ class _Time extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${startTime.toString()}',
+          startTime,
           style: textStyle,
         ),
         Text(
-          '${endTime.toString()}',
+          endTime,
           style: textStyle.copyWith(
-          fontSize: 15.0,
+            fontSize: 15.0,
           ),
         ),
       ],
@@ -134,15 +150,13 @@ class _Time extends StatelessWidget {
   }
 }
 
-// 콘텐츠 담을 거
 class _Content extends StatelessWidget {
   final String content;
 
-
-   const _Content({
+  const _Content({
     required this.content,
     Key? key,
-  }) : super (key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -151,5 +165,12 @@ class _Content extends StatelessWidget {
         content,
       ),
     );
+  }
+}
+
+class _AnotherInfo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text('다른 정보'); // 예시 텍스트
   }
 }

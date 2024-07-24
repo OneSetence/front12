@@ -16,8 +16,7 @@ class _TextAddState extends State<TextAdd> {
   void workload_enter() {
     Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
       builder: (_) => WorkloadPage(),
-    ),
-    );
+    ));
   }
 
   @override
@@ -53,14 +52,14 @@ class _TextAddState extends State<TextAdd> {
           children: [
             SizedBox(height: 50),
             Padding(
-              padding: const EdgeInsets.all(16.0), // TextField에 패딩 적용
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Center(
                     child: TextField(
                       controller: _controller,
                       focusNode: _focusNode,
-                      textAlign: TextAlign.center, // 텍스트를 가운데 정렬
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         hintText: '한 문장으로 일정을 등록할 수 있어요!',
                         hintStyle: TextStyle(
@@ -77,20 +76,22 @@ class _TextAddState extends State<TextAdd> {
                       maxLength: 30,
                     ),
                   ),
-                  SizedBox(height: 60),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '30자 이내로 입력해주세요!',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
                 ],
               ),
             ),
-            Spacer(),
+            Expanded(child: Container()), // 남은 공간 채우기
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  '30자 이내로 입력해주세요!',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
             SizedBox(
-              width: double.infinity, // 가로로 최대 너비 설정
+              width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
                   // 서버 요청 함수
@@ -98,18 +99,18 @@ class _TextAddState extends State<TextAdd> {
                   workload_enter();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: blue_01, // 버튼 배경색 설정
+                  backgroundColor: blue_01,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
                   ),
-                  minimumSize: Size(double.infinity, 50), // 버튼 크기 설정
+                  minimumSize: Size(double.infinity, 50),
                 ),
                 child: Text(
                   '다음',
                   style: TextStyle(
                     fontSize: 16,
                     color: white_01,
-                  ), // 흰색 텍스트
+                  ),
                 ),
               ),
             ),
@@ -119,7 +120,7 @@ class _TextAddState extends State<TextAdd> {
     );
   }
 
-// 서버에 문장 보내기
+  // 서버에 문장 보내기
   void _sendPostRequest() async {
     final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
     final headers = {"Content-Type": "application/json"};
@@ -132,12 +133,8 @@ class _TextAddState extends State<TextAdd> {
       } else {
         print('Error: ${response.statusCode}');
       }
-    } catch
-    (e) {
+    } catch (e) {
       print('Exception: $e');
     }
   }
-
-
 }
-
