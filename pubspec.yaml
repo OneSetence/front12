@@ -45,6 +45,8 @@ dependencies:
   uuid: 4.1.0
   http: ^1.2.1
   dropdown_button2: ^2.3.8
+  #카카오촉 공유하기
+  kakao_flutter_sdk : ^1.1.0
 
 
 dev_dependencies:

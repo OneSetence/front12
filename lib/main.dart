@@ -4,10 +4,15 @@ import 'pages/my_page.dart';
 import 'pages/calendar_page.dart';
 import '../const/colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
+  KakaoSdk.init(
+    nativeAppKey: '0b944cf873b74f509047c1a00350657a',
+    javaScriptAppKey: 'cb81471317ab5fb1f9afe23d266c112e',
+  );
   runApp(const MyApp());
 }
 
