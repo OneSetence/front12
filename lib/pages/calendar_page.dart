@@ -7,6 +7,7 @@ import '../component/schedule_bottom_sheet.dart';
 import 'dart:convert';
 import 'package:han_final/pages/text_add.dart';
 import 'package:han_final/component/today_banner.dart';
+import 'package:flutter/services.dart';
 
 class CalendarPage extends StatefulWidget {
   CalendarPage({Key? key}) : super(key: key);
@@ -92,22 +93,19 @@ class _CalendarState extends State<CalendarPage> {
           end_minutes: 3,
           content: '예지니랑 테니스하기',
           state: '시작 전'),
-      ScheduleCard(
-          start_year: 2024,
-          start_month: 123,
-          start_day: 123,
-          start_hour: 1,
-          start_minutes: 3,
-          end_year: 2022,
-          end_month: 3,
-          end_day: 1,
-          end_hour: 3,
-          end_minutes: 3,
-          content: '예지니랑 테니스하기',
-          state: '시작 전'),
       // 다른 ScheduleCard 항목들...
     ]
   };
+
+  @override
+  void initState() {
+    super.initState();
+    // 상태바 색상 설정
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // 상태바의 배경색 설정
+      statusBarIconBrightness: Brightness.dark, // 상태바 아이콘의 색상 설정
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,6 +206,3 @@ class _CalendarState extends State<CalendarPage> {
     });
   }
 }
-
-
-

@@ -13,9 +13,9 @@ class _TextAddState extends State<TextAdd> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
-  void workload_enter() {
+  void workload_enter(String apiUrl) {
     Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-      builder: (_) => WorkloadPage(),
+      builder: (_) => WorkloadPage(apiUrl: apiUrl),
     ));
   }
 
@@ -94,9 +94,7 @@ class _TextAddState extends State<TextAdd> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // 서버 요청 함수
-                  //_sendPostRequest();
-                  workload_enter();
+                  _sendPostRequest(); // 서버 요청 함수 호출
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue_01,
@@ -122,19 +120,29 @@ class _TextAddState extends State<TextAdd> {
 
   // 서버에 문장 보내기
   void _sendPostRequest() async {
-    final url = Uri.parse('http://192.168.100.22:8080/api/v1/texts');
-    final headers = {"Content-Type": "application/json"};
-    final body = json.encode({"text": "서예지니니니니닌."});
+    final apiUrl = 'https://8b21-122-36-149-213.ngrok-free.app/api/v1/texts';
+    final requestBody = {'text': _controller.text};
 
     try {
-      final response = await http.post(url, headers: headers, body: body);
-      if (response.statusCode == 200) {
-        print('Success: ${response.body}');
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 201) {
+        final locationHeader = response.headers['location'];
+        if (locationHeader != null) {
+          // Location 헤더에 포함된 URL을 전달
+          workload_enter(locationHeader);
+        } else {
+          print('Location 헤더가 존재하지 않습니다.');
+        }
       } else {
-        print('Error: ${response.statusCode}');
+        print('API 요청 실패: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception: $e');
+      print('예외 발생: $e');
     }
   }
 }

@@ -97,9 +97,9 @@ class MyPageMain extends StatelessWidget {
   }
 
   void _sendPostRequest() async {
-    final url = Uri.parse('http://192.168.124.255:8080/api/v1/texts');
+    final url = Uri.parse('https://8b21-122-36-149-213.ngrok-free.app/api/v1/texts');
     final headers = {"Content-Type": "application/json"};
-    final body = json.encode({"text": "ㄴㅏ요니 떡볶이 언제왕!!!!!"});
+    final body = json.encode({"text": "서 예 진 공 차 알 바 생"});
 
     try {
       final response = await http.post(url, headers: headers, body: body);

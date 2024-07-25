@@ -6,6 +6,10 @@ import '../const/colors.dart';
 import 'package:han_final/pages/calendar_page.dart';
 
 class WorkloadPage extends StatefulWidget {
+  final String apiUrl;
+
+  WorkloadPage({required this.apiUrl});
+
   @override
   _WorkloadPageState createState() => _WorkloadPageState();
 }
@@ -98,10 +102,8 @@ class _WorkloadPageState extends State<WorkloadPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // 서버 요청 API 연동
-
-                  // 완료 후 캘린더 main 페이지로 이동
-                  calender_main();
+                  _sendWorkload(); // 서버 요청 API 연동
+                  calender_main(); // 완료 후 캘린더 main 페이지로 이동
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue_01,
@@ -124,4 +126,28 @@ class _WorkloadPageState extends State<WorkloadPage> {
       ),
     );
   }
+
+  // 서버에 작업량 데이터 보내기
+  void _sendWorkload() async {
+    final baseUrl = 'https://8b21-122-36-149-213.ngrok-free.app';
+    final completeUrl = '$baseUrl${widget.apiUrl}'; // 기본 URL과 전달된 URL 결합
+    final requestBody = {'inputTime': _controller.text};
+
+    try {
+      final response = await http.patch(
+        Uri.parse(completeUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        print('작업량 전송 성공: ${response.body}');
+      } else {
+        print('API 요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('예외 발생: $e');
+    }
+  }
 }
+
