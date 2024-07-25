@@ -10,55 +10,72 @@ import 'dart:io';
 
 
 class ScheduleCard extends StatelessWidget {
-  final int start_year;
-  final int start_month;
-  final int start_day;
-  final int start_hour;
-  final int start_minutes;
+  final int? start_year;
+  final int? start_month;
+  final int? start_day;
+  final int? start_hour;
+  final int? start_minutes;
 
-  final int end_year;
-  final int end_month;
-  final int end_day;
-  final int end_hour;
-  final int end_minutes;
+  final int? end_year;
+  final int? end_month;
+  final int? end_day;
+  final int? end_hour;
+  final int? end_minutes;
 
   final String content;
   final String state;
 
   const ScheduleCard({
-    required this.start_year,
-    required this.start_month,
-    required this.start_day,
-    required this.start_hour,
-    required this.start_minutes,
-    required this.end_year,
-    required this.end_month,
-    required this.end_day,
-    required this.end_hour,
-    required this.end_minutes,
+    this.start_year,
+    this.start_month,
+    this.start_day,
+    this.start_hour,
+    this.start_minutes,
+    this.end_year,
+    this.end_month,
+    this.end_day,
+    this.end_hour,
+    this.end_minutes,
     required this.content,
     required this.state,
     Key? key,
   }) : super(key: key);
 
-
   factory ScheduleCard.fromJson(Map<String, dynamic> json) {
-    String state = json['status'];
+    // JSON에서 가져오는 데이터가 null일 경우 기본값 설정
+    int? startYear = json['start'] != null ? json['start'][0] : null;
+    int? startMonth = json['start'] != null ? json['start'][1] : null;
+    int? startDay = json['start'] != null ? json['start'][2] : null;
+    int? startHour = json['start'] != null ? json['start'][3] : null;
+    int? startMinutes = json['start'] != null ? json['start'][4] : null;
+
+    int? endYear = json['end'] != null ? json['end'][0] : null;
+    int? endMonth = json['end'] != null ? json['end'][1] : null;
+    int? endDay = json['end'] != null ? json['end'][2] : null;
+    int? endHour = json['end'] != null ? json['end'][3] : null;
+    int? endMinutes = json['end'] != null ? json['end'][4] : null;
+
+    String state = json['status'] ?? 'Unknown';
     if (state == 'TODO') {
-      state = '시작';
+      state = '시작 전';
+    } else if (state == 'DONE') {
+      state = '완료됨';
+    } else if (state == 'IN_PROGRESS') {
+      state = '진행 중';
     }
+
     return ScheduleCard(
-      start_year: json['start'][0],
-      start_month: json['start'][1],
-      start_day: json['start'][2],
-      start_hour: json['start'][3],
-      start_minutes: json['start'][4],
-      end_year: json['end'][0],
-      end_month: json['end'][1],
-      end_day: json['end'][2],
-      end_hour: json['end'][3],
-      end_minutes: json['end'][4],
-      content: json['title'],
+      start_year: startYear,
+      start_month: startMonth,
+      start_day: startDay,
+      start_hour: startHour,
+      start_minutes: startMinutes,
+      end_year: endYear,
+      end_month: endMonth,
+      end_day: endDay,
+      end_hour: endHour,
+      end_minutes: endMinutes,
+      content: json['title'] ?? '제목 없음',
       state: state,
     );
   }
@@ -209,9 +226,9 @@ void kakao_share() async {
     itemContent: ItemContent(
       //profileText: 'Kakao',
       //profileImageUrl: Uri.parse(
-          //'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png'),
+      //'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png'),
       //titleImageUrl: Uri.parse(
-          //'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png'),
+      //'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png'),
       titleImageText: '예진님으로부터 일정 변경 요청이 도착했어요',
       //titleImageCategory: 'cake',
 
@@ -252,5 +269,3 @@ void kakao_share() async {
   }
 
 }
-
-

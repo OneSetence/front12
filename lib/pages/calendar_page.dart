@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:han_final/component/custom_text_field.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/services.dart';
 import '../component/main_calendar.dart';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
 import '../component/schedule_bottom_sheet.dart';
 import 'dart:convert';
-import 'package:han_final/pages/text_add.dart';
+import 'package:http/http.dart' as http;
 import 'package:han_final/component/today_banner.dart';
-import 'package:flutter/services.dart';
+import 'package:han_final/pages/text_add.dart';
+import '../component/progress_dropdown.dart';
+import '../component/category_dropdown.dart';
+
+
 
 class CalendarPage extends StatefulWidget {
   CalendarPage({Key? key}) : super(key: key);
@@ -23,103 +29,68 @@ class _CalendarState extends State<CalendarPage> {
     DateTime.now().day,
   );
 
-  DateTime focusedDate = DateTime.now(); // 추가: focusedDate 변수 추가
-
-  // 일정 데이터를 저장할 Map
-  Map<DateTime, List<ScheduleCard>> schedules = {
-    DateTime.utc(2024, 5, 18): [
-      ScheduleCard(
-          start_year: 2024,
-          start_month: 123,
-          start_day: 123,
-          start_hour: 1,
-          start_minutes: 3,
-          end_year: 2022,
-          end_month: 3,
-          end_day: 1,
-          end_hour: 3,
-          end_minutes: 3,
-          content: '예지니랑 테니스하기',
-          state: '시작 전'),
-      ScheduleCard(
-          start_year: 2024,
-          start_month: 123,
-          start_day: 123,
-          start_hour: 1,
-          start_minutes: 3,
-          end_year: 2022,
-          end_month: 3,
-          end_day: 1,
-          end_hour: 3,
-          end_minutes: 3,
-          content: '예지니랑 테니스하기',
-          state: '시작 전'),
-      ScheduleCard(
-          start_year: 2024,
-          start_month: 123,
-          start_day: 123,
-          start_hour: 1,
-          start_minutes: 3,
-          end_year: 2022,
-          end_month: 3,
-          end_day: 1,
-          end_hour: 3,
-          end_minutes: 3,
-          content: '예지니랑 테니스하기',
-          state: '시작 전'),
-      ScheduleCard(
-          start_year: 2024,
-          start_month: 123,
-          start_day: 123,
-          start_hour: 1,
-          start_minutes: 3,
-          end_year: 2022,
-          end_month: 3,
-          end_day: 1,
-          end_hour: 3,
-          end_minutes: 3,
-          content: '예지니랑 테니스하기',
-          state: '시작 전'),
-      ScheduleCard(
-          start_year: 2024,
-          start_month: 123,
-          start_day: 123,
-          start_hour: 1,
-          start_minutes: 3,
-          end_year: 2022,
-          end_month: 3,
-          end_day: 1,
-          end_hour: 3,
-          end_minutes: 3,
-          content: '예지니랑 테니스하기',
-          state: '시작 전'),
-      // 다른 ScheduleCard 항목들...
-    ]
-  };
+  DateTime focusedDate = DateTime.now();
+  List<ScheduleCard> allSchedules = [];
+  List<ScheduleCard> selectedSchedules = [];
 
   @override
   void initState() {
     super.initState();
-    // 상태바 색상 설정
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // 상태바의 배경색 설정
-      statusBarIconBrightness: Brightness.dark, // 상태바 아이콘의 색상 설정
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
     ));
+    _fetchAllSchedules();
+  }
+
+  Future<void> _fetchAllSchedules() async {
+    final String baseUrl = 'https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos';
+    final response = await http.get(Uri.parse(baseUrl));
+
+    if (response.statusCode == 200) {
+      try {
+        List<dynamic> todos = json.decode(utf8.decode(response.bodyBytes)); // 수정된 부분
+        if (todos != null) {
+          setState(() {
+            allSchedules = todos.map((todo) => ScheduleCard.fromJson(todo)).toList();
+            _filterSchedulesForSelectedDate();
+          });
+        } else {
+          print('No schedules found in response.');
+        }
+      } catch (e) {
+        print('Error parsing JSON: $e');
+      }
+    } else {
+      print('Failed to load schedules, status code: ${response.statusCode}');
+    }
+  }
+
+  void _filterSchedulesForSelectedDate() {
+    setState(() {
+      selectedSchedules = allSchedules.where((schedule) {
+        final scheduleDate = DateTime(
+          schedule.start_year ?? 0,
+          schedule.start_month ?? 1,
+          schedule.start_day ?? 1,
+        );
+        return scheduleDate.year == selectedDate.year &&
+            scheduleDate.month == selectedDate.month &&
+            scheduleDate.day == selectedDate.day;
+      }).toList();
+    });
+  }
+
+  void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
+    setState(() {
+      this.selectedDate = selectedDate;
+      this.focusedDate = focusedDate;
+      _filterSchedulesForSelectedDate();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<ScheduleCard> selectedSchedules = schedules[selectedDate] ?? [];
-
-    // 문장 등록
-    void text_enroll() {
-      Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(
-          builder: (_) => TextAdd(),
-        ),
-      );
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: Stack(
@@ -131,10 +102,111 @@ class _CalendarState extends State<CalendarPage> {
               backgroundColor: blue_01,
               onPressed: () {
                 showModalBottomSheet(
-                  context: context,
-                  isDismissible: true,
-                  builder: (_) => ScheduleBottomSheet(),
                   isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+                    return Container(
+                        height: MediaQuery.of(context).size.height / 1.8 + bottomInset,
+                        // 이전에는 높이 700 맞음
+                        //height: 480,
+                        margin: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 30,
+                        ),
+                        decoration: const BoxDecoration(
+                          color: white_01,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                        child: Padding(
+                            padding: EdgeInsets.only(left: 20, right:20, top:20, bottom:20),
+                            child: Column(
+                              children: [
+                                Image.asset('images/bottomdown.png'),
+                                SizedBox(height:12),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextField(
+                                        label: '시작일',
+                                        isTime: true,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16.0),
+                                    Expanded(
+                                      child: CustomTextField(
+                                        label: '종료일',
+                                        isTime: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 15),
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    '진행상태',
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 50,
+                                  child: ProgressDropdown(),
+                                ),
+                                SizedBox(height: 20),
+                                Container(
+                                    alignment: Alignment.topLeft ,
+                                    child: Text('카테고리')
+                                ),
+                                Container(
+                                  height: 50,
+                                  child: CategoryDropdown(),
+                                ),
+                                SizedBox(height: 8.0),
+                                Expanded(
+                                  child: CustomTextField(
+                                    label: '작업량',
+                                    isTime: false,
+                                  ),
+                                ),
+                                SizedBox(height:15),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // 서버에 보낼 함수 API 연동
+                                      //onSavePressed;
+
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      //foregroundColor: blue_01,
+                                      backgroundColor: blue_01,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      minimumSize: Size(double.infinity, 60),
+                                    ),
+                                    child: Text(
+                                        '등록하기',
+                                        style: TextStyle(
+                                          color: white_01,
+                                        )
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                        )
+                      //child : ~
+                    );
+                  },
+                  backgroundColor: Colors.transparent,
+                  //isDismissible: true,
+                  //builder: (_) => ScheduleBottomSheet(),
+                  //isScrollControlled: true,
                 );
               },
               child: Icon(
@@ -148,7 +220,13 @@ class _CalendarState extends State<CalendarPage> {
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
               backgroundColor: blue_01,
-              onPressed: text_enroll,
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(
+                    builder: (_) => TextAdd(),
+                  ),
+                );
+              },
               tooltip: "문장 등록",
               child: Icon(
                 Icons.edit,
@@ -164,18 +242,18 @@ class _CalendarState extends State<CalendarPage> {
             MainCalendar(
               selectedDate: selectedDate,
               onDaySelected: onDaySelected,
-              focusedDate: focusedDate, // 추가: focusedDate 전달
+              focusedDate: focusedDate,
             ),
             SizedBox(height: 10.0),
             TodayBanner(
               selectedDate: selectedDate,
-              count: 0,
+              count: selectedSchedules.length,
             ),
             SizedBox(height: 10.0),
             Expanded(
               child: ListView(
                 children: selectedSchedules.map((schedule) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0), // 수직 여백 추가
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
                   child: ScheduleCard(
                     start_year: schedule.start_year,
                     start_month: schedule.start_month,
@@ -197,12 +275,5 @@ class _CalendarState extends State<CalendarPage> {
         ),
       ),
     );
-  }
-
-  void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
-    setState(() {
-      this.selectedDate = selectedDate;
-      this.focusedDate = focusedDate; // 추가: focusedDate 업데이트
-    });
   }
 }

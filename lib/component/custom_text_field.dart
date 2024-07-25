@@ -25,7 +25,7 @@ class CustomTextField extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: main_color,
+            color: blue_01,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -42,9 +42,12 @@ class CustomTextField extends StatelessWidget {
             ]
                 : [],
             decoration: InputDecoration(
-              border: InputBorder.none,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide.none, // 테두리 색상 없음
+              ),
               filled: true,
-              fillColor: Colors.grey[300],
+              fillColor: textfield_bg_01,
               suffixText: isTime ? '시' : null,
             ),
           ),
