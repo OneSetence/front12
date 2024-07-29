@@ -1,21 +1,20 @@
-
-import '../const/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-
-
+import '../const/colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
   final bool isTime;
+  final TextEditingController? controller;
+  final VoidCallback? onTap;
 
   const CustomTextField ({
     required this.label,
     required this.isTime,
+    this.controller,
+    this.onTap, // onTap 매개변수 추가
     Key? key,
   }) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +31,14 @@ class CustomTextField extends StatelessWidget {
         Expanded(
           flex: isTime ? 0 : 1,
           child: TextFormField(
+            controller: controller,
             cursorColor: Colors.grey,
             maxLines: isTime ? 1 : null,
             expands: !isTime,
             keyboardType: isTime ? TextInputType.number : TextInputType.multiline,
             inputFormatters: isTime
-              ? [
-                FilteringTextInputFormatter.digitsOnly,
+                ? [
+              FilteringTextInputFormatter.digitsOnly,
             ]
                 : [],
             decoration: InputDecoration(
@@ -48,11 +48,13 @@ class CustomTextField extends StatelessWidget {
               ),
               filled: true,
               fillColor: textfield_bg_01,
-              suffixText: isTime ? '시' : null,
+              //suffixText: isTime ? '시' : null,
             ),
+            onTap: onTap, // onTap 전달
           ),
         ),
       ],
     );
   }
 }
+

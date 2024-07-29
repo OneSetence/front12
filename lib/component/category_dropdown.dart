@@ -5,7 +5,9 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 const List<String> category_list = <String>['운동', '학교', '한이음', '동아리'];
 
 class CategoryDropdown extends StatefulWidget {
-  const CategoryDropdown({super.key});
+  final ValueChanged<String?>? onChanged; // 추가된 부분
+
+  const CategoryDropdown({Key? key, this.onChanged}) : super(key: key);
 
   @override
   State<CategoryDropdown> createState() => _CategoryDropdownState();
@@ -21,16 +23,16 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
         color: textfield_bg_01,
         borderRadius: BorderRadius.circular(15),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical:0 ),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: DropdownButtonFormField2<String>(
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(vertical: 16),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none, // 테두리 없음
+            borderSide: BorderSide.none,
           ),
-          fillColor: textfield_bg_01, // 배경색 설정
-          filled: true, // fillColor 사용하려면 필요
+          fillColor: textfield_bg_01,
+          filled: true,
         ),
         hint: const Text(
           '원하는 카테고리를 선택해주세요!',
@@ -49,6 +51,9 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
           setState(() {
             category = value!;
           });
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
         },
         items: category_list.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -65,3 +70,4 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
     );
   }
 }
+

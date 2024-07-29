@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../component/main_calendar.dart';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
+import '../component/schedule_bottom_sheet.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:han_final/component/today_banner.dart';
@@ -29,11 +30,11 @@ class _CalendarState extends State<CalendarPage> {
   DateTime focusedDate = DateTime.now();
   List<ScheduleCard> allSchedules = [];
   List<ScheduleCard> selectedSchedules = [];
+  final TextEditingController startController = TextEditingController();
+  final TextEditingController endController = TextEditingController();
   final TextEditingController inputTimeController = TextEditingController();
-  final TextEditingController startDateController = TextEditingController(); // '시작일' 필드용 컨트롤러 추가
-  final TextEditingController endDateController = TextEditingController(); // '종료일' 필드용 컨트롤러 추가
-  String selectedCategory = '학교';
-  String selectedProgress = '시작전';
+  String selectedCategory = '';
+  String selectedProgress = '';
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _CalendarState extends State<CalendarPage> {
 
     if (response.statusCode == 200) {
       try {
-        List<dynamic> todos = json.decode(utf8.decode(response.bodyBytes));
+        List<dynamic> todos = json.decode(utf8.decode(response.bodyBytes)); // 수정된 부분
         if (todos != null) {
           setState(() {
             allSchedules = todos.map((todo) => ScheduleCard.fromJson(todo)).toList();
@@ -91,34 +92,16 @@ class _CalendarState extends State<CalendarPage> {
     });
   }
 
-  String _mapProgressToStatus(String progress) {
-    switch (progress) {
-      case '시작전':
-        return 'TODO';
-      case '진행중':
-        return 'IN_PROGRESS';
-      case '완료':
-        return 'DONE';
-      default:
-        return 'TODO';
-    }
-  }
-
   Future<void> onSavePressed() async {
-    final DateTime fixedStart = DateTime(2024, 6, 24, 13, 45, 0); // 고정된 시작 시간
-    final DateTime fixedEnd = DateTime(2024, 6, 24, 15, 0, 0);   // 고정된 종료 시간
-
-    final String status = _mapProgressToStatus(selectedProgress);
-
     final String baseUrl = 'https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos';
     final Map<String, dynamic> body = {
-      "title": "시간표 짜기",
-      "start": fixedStart.toIso8601String(),
-      "end": fixedEnd.toIso8601String(),
+      "title": "시간표 짜기", // Title can be fetched from an input field if needed
+      "start": startController.text,
+      "end": endController.text,
       "category": selectedCategory,
-      "status": status,
-      "location": "집",
-      "together": "서에진",
+      "status": selectedProgress,
+      "location": "집", // Location can be fetched from an input field if needed
+      "together": "서에진", // Together can be fetched from an input field if needed
       "inputTime": int.tryParse(inputTimeController.text) ?? 0,
     };
 
@@ -132,100 +115,9 @@ class _CalendarState extends State<CalendarPage> {
 
     if (response.statusCode == 201) {
       print('Schedule created successfully');
-      Navigator.pop(context); // 바텀 시트 닫기
-      _fetchAllSchedules(); // 일정 목록 갱신
     } else {
       print('Failed to create schedule, status code: ${response.statusCode}');
     }
-  }
-
-  void _showDateSelectionBottomSheet(BuildContext context, TextEditingController controller) {
-    DateTime tempSelectedDate = selectedDate; // 임시로 선택된 날짜를 저장
-
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (BuildContext context) {
-        final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              height: MediaQuery.of(context).size.height / 1.6 + bottomInset,
-              margin: const EdgeInsets.only(
-                left: 10,
-                right: 10,
-                bottom: 30,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: TableCalendar(
-                        locale: 'ko_KR',
-                        firstDay: DateTime.utc(2000, 1, 1),
-                        lastDay: DateTime.utc(2100, 12, 31),
-                        focusedDay: tempSelectedDate,
-                        selectedDayPredicate: (day) => isSameDay(tempSelectedDate, day),
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            tempSelectedDate = selectedDay;
-                          });
-                        },
-                        headerStyle: HeaderStyle(
-                          titleCentered: true,
-                          formatButtonVisible: false,
-                        ),
-                        calendarStyle: CalendarStyle(
-                          isTodayHighlighted: false,
-                          selectedDecoration: BoxDecoration(
-                            color: blue_01,
-                            shape: BoxShape.circle,
-                          ),
-                          todayDecoration: BoxDecoration(), // 오늘 날짜에 대한 장식 제거
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // '시작일' 또는 '종료일' 필드에 선택된 날짜를 표시
-                          controller.text =
-                          "${tempSelectedDate.year}년 ${tempSelectedDate.month}월 ${tempSelectedDate.day}일";
-                          Navigator.pop(context); // 바텀 시트 닫기
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: blue_01,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          minimumSize: Size(double.infinity, 60),
-                        ),
-                        child: Text(
-                          "${tempSelectedDate.year}년 ${tempSelectedDate.month}월 ${tempSelectedDate.day}일 선택",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-      backgroundColor: Colors.transparent,
-    );
   }
 
   @override
@@ -270,10 +162,7 @@ class _CalendarState extends State<CalendarPage> {
                                   child: CustomTextField(
                                     label: '시작일',
                                     isTime: true,
-                                    controller: startDateController, // 컨트롤러 추가
-                                    onTap: () {
-                                      _showDateSelectionBottomSheet(context, startDateController);
-                                    },
+                                    controller: startController,
                                   ),
                                 ),
                                 const SizedBox(width: 16.0),
@@ -281,10 +170,7 @@ class _CalendarState extends State<CalendarPage> {
                                   child: CustomTextField(
                                     label: '종료일',
                                     isTime: true,
-                                    controller: endDateController, // 컨트롤러 추가
-                                    onTap: () {
-                                      _showDateSelectionBottomSheet(context, endDateController);
-                                    },
+                                    controller: endController,
                                   ),
                                 ),
                               ],
@@ -343,10 +229,10 @@ class _CalendarState extends State<CalendarPage> {
                                   minimumSize: Size(double.infinity, 60),
                                 ),
                                 child: Text(
-                                    '등록하기',
-                                    style: TextStyle(
-                                      color: white_01,
-                                    )
+                                  '등록하기',
+                                  style: TextStyle(
+                                    color: white_01,
+                                  )
                                 ),
                               ),
                             ),
@@ -419,16 +305,4 @@ class _CalendarState extends State<CalendarPage> {
                   ),
                 )).toList(),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
-
-
-
+           

@@ -36,33 +36,11 @@ class MainCalendar extends StatelessWidget {
       ),
       calendarStyle: CalendarStyle(
         isTodayHighlighted: false,
-        defaultDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.0),
-          color: light_grey_color,
-        ),
-        weekendDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.0),
-          color: light_grey_color,
-        ),
         selectedDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.0),
-          border: Border.all(
-            color:blue_01,
-            width: 1.0,
-          ),
-        ),
-        defaultTextStyle: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: dark_grey_color,
-        ),
-        weekendTextStyle: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: dark_grey_color,
-        ),
-        selectedTextStyle: TextStyle(
-          fontWeight: FontWeight.w600,
           color: blue_01,
+          shape: BoxShape.circle,
         ),
+        todayDecoration: BoxDecoration(), // 오늘 날짜에 대한 장식 제거
       ),
     );
   }
