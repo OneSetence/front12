@@ -98,14 +98,24 @@ class ScheduleCard extends StatelessWidget {
           children: [
             IntrinsicHeight(
               child: Row(
+                children: [
+                  Text(
+                      content,
+                      style: TextStyle(
+                        fontSize: 17.0,
+                      ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10.0),
+            IntrinsicHeight(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _Time(
                     startTime: '$start_hour시 $start_minutes분  ',
                     endTime: '$end_hour시 $end_minutes분  ',
-                  ),
-                  _Content(
-                    content: content,
                   ),
                   SizedBox(width: 16.0),
                   _Content(
