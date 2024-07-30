@@ -32,6 +32,9 @@ class _CalendarState extends State<CalendarPage> {
   final TextEditingController inputTimeController = TextEditingController();
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController friendController = TextEditingController();
+
   String selectedCategory = '학교';
   String selectedProgress = '시작전';
   Map<DateTime, List<ScheduleCard>> events = {}; // 일정 이벤트를 저장할 맵
@@ -171,8 +174,8 @@ class _CalendarState extends State<CalendarPage> {
       "endMinute": endMinute,
       "category": selectedCategory,
       "status": status,
-      "location": "바로피트니스",
-      "together": "서에진",
+      "location": locationController.text,
+      "together": friendController.text,
       "inputTime": int.tryParse(inputTimeController.text) ?? 0,
     };
 
@@ -204,7 +207,7 @@ class _CalendarState extends State<CalendarPage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Container(
-              height: MediaQuery.of(context).size.height / 1.6 + bottomInset,
+              height: MediaQuery.of(context).size.height / 1.7 + bottomInset,
               margin: const EdgeInsets.only(
                 left: 10,
                 right: 10,
@@ -307,7 +310,7 @@ class _CalendarState extends State<CalendarPage> {
                   builder: (BuildContext context) {
                     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
                     return Container(
-                      height: MediaQuery.of(context).size.height / 1.8 + bottomInset,
+                      height: MediaQuery.of(context).size.height / 1.35 + bottomInset,
                       margin: const EdgeInsets.only(
                         left: 10,
                         right: 10,
@@ -391,7 +394,23 @@ class _CalendarState extends State<CalendarPage> {
                                 controller: inputTimeController,
                               ),
                             ),
-                            SizedBox(height:15),
+                            SizedBox(height:10),
+                            Expanded(
+                              child: CustomTextField(
+                                label: "장소",
+                                isTime: false,
+                                controller: locationController,
+                              ),
+                            ),
+                            SizedBox(height:10),
+                            Expanded(
+                              child: CustomTextField(
+                                label: '친구',
+                                isTime: false,
+                                controller: friendController,
+                              ),
+                            ),
+                            SizedBox(height:10),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
