@@ -120,7 +120,7 @@ class _TextAddState extends State<TextAdd> {
 
   // 서버에 문장 보내기
   void _sendPostRequest() async {
-    final apiUrl = 'https://8b21-122-36-149-213.ngrok-free.app/api/v1/texts';
+    final apiUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/texts';
     final requestBody = {'text': _controller.text};
 
     try {

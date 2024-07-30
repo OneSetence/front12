@@ -30,10 +30,11 @@ class _CalendarState extends State<CalendarPage> {
   List<ScheduleCard> allSchedules = [];
   List<ScheduleCard> selectedSchedules = [];
   final TextEditingController inputTimeController = TextEditingController();
-  final TextEditingController startDateController = TextEditingController(); // '시작일' 필드용 컨트롤러 추가
-  final TextEditingController endDateController = TextEditingController(); // '종료일' 필드용 컨트롤러 추가
+  final TextEditingController startDateController = TextEditingController();
+  final TextEditingController endDateController = TextEditingController();
   String selectedCategory = '학교';
   String selectedProgress = '시작전';
+  Map<DateTime, List<ScheduleCard>> events = {}; // 일정 이벤트를 저장할 맵
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _CalendarState extends State<CalendarPage> {
   }
 
   Future<void> _fetchAllSchedules() async {
-    final String baseUrl = 'https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos';
+    final String baseUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos';
     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
@@ -55,6 +56,7 @@ class _CalendarState extends State<CalendarPage> {
         if (todos != null) {
           setState(() {
             allSchedules = todos.map((todo) => ScheduleCard.fromJson(todo)).toList();
+            _setupEvents(); // 이벤트 설정
             _filterSchedulesForSelectedDate();
           });
         } else {
@@ -68,24 +70,56 @@ class _CalendarState extends State<CalendarPage> {
     }
   }
 
+  void _setupEvents() {
+    events.clear(); // 기존 이벤트 초기화
+    for (var schedule in allSchedules) {
+      final scheduleStartDate = DateTime(
+        schedule.start_year ?? 0,
+        schedule.start_month ?? 1,
+        schedule.start_day ?? 1,
+      );
+
+      final scheduleEndDate = DateTime(
+        schedule.end_year ?? schedule.start_year ?? 0,
+        schedule.end_month ?? schedule.start_month ?? 1,
+        schedule.end_day ?? schedule.start_day ?? 1,
+      );
+
+      for (DateTime date = scheduleStartDate;
+      date.isBefore(scheduleEndDate.add(const Duration(days: 1)));
+      date = date.add(const Duration(days: 1))) {
+        final dateWithoutTime = DateTime(date.year, date.month, date.day); // 시간 정보 제거
+        if (events[dateWithoutTime] == null) {
+          events[dateWithoutTime] = [];
+        }
+        events[dateWithoutTime]!.add(schedule);
+      }
+    }
+
+    // Console에 이벤트 정보 출력
+    events.forEach((key, value) {
+      print("Date: $key, Events: ${value.length}");
+    });
+  }
+
   void _filterSchedulesForSelectedDate() {
     setState(() {
-      selectedSchedules = allSchedules.where((schedule) {
-        final scheduleDate = DateTime(
-          schedule.start_year ?? 0,
-          schedule.start_month ?? 1,
-          schedule.start_day ?? 1,
-        );
-        return scheduleDate.year == selectedDate.year &&
-            scheduleDate.month == selectedDate.month &&
-            scheduleDate.day == selectedDate.day;
-      }).toList();
+      final selectedDateWithoutTime = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+      );
+      selectedSchedules = events[selectedDateWithoutTime] ?? [];
     });
   }
 
   void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
     setState(() {
-      this.selectedDate = selectedDate;
+      this.selectedDate = DateTime.utc(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+      );
       this.focusedDate = focusedDate;
       _filterSchedulesForSelectedDate();
     });
@@ -105,19 +139,39 @@ class _CalendarState extends State<CalendarPage> {
   }
 
   Future<void> onSavePressed() async {
-    final DateTime fixedStart = DateTime(2024, 6, 24, 13, 45, 0); // 고정된 시작 시간
-    final DateTime fixedEnd = DateTime(2024, 6, 24, 15, 0, 0);   // 고정된 종료 시간
+    final int startHour = 13;
+    final int startMinute = 45;
+    final int endHour = 15;
+    final int endMinute = 0;
+
+    final startDateParts = startDateController.text.split('년 ');
+    final startYear = int.parse(startDateParts[0]);
+    final startMonth = int.parse(startDateParts[1].split('월 ')[0]);
+    final startDay = int.parse(startDateParts[1].split('월 ')[1].split('일')[0]);
+
+    final endDateParts = endDateController.text.split('년 ');
+    final endYear = int.parse(endDateParts[0]);
+    final endMonth = int.parse(endDateParts[1].split('월 ')[0]);
+    final endDay = int.parse(endDateParts[1].split('월 ')[1].split('일')[0]);
 
     final String status = _mapProgressToStatus(selectedProgress);
 
-    final String baseUrl = 'https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos';
+    final String baseUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos';
     final Map<String, dynamic> body = {
       "title": "시간표 짜기",
-      "start": fixedStart.toIso8601String(),
-      "end": fixedEnd.toIso8601String(),
+      "startYear": startYear,
+      "startMonth": startMonth,
+      "startDay": startDay,
+      "startHour": startHour,
+      "startMinute": startMinute,
+      "endYear": endYear,
+      "endMonth": endMonth,
+      "endDay": endDay,
+      "endHour": endHour,
+      "endMinute": endMinute,
       "category": selectedCategory,
       "status": status,
-      "location": "집",
+      "location": "바로피트니스",
       "together": "서에진",
       "inputTime": int.tryParse(inputTimeController.text) ?? 0,
     };
@@ -132,15 +186,15 @@ class _CalendarState extends State<CalendarPage> {
 
     if (response.statusCode == 201) {
       print('Schedule created successfully');
-      Navigator.pop(context); // 바텀 시트 닫기
-      _fetchAllSchedules(); // 일정 목록 갱신
+      Navigator.pop(context);
+      _fetchAllSchedules();
     } else {
       print('Failed to create schedule, status code: ${response.statusCode}');
     }
   }
 
   void _showDateSelectionBottomSheet(BuildContext context, TextEditingController controller) {
-    DateTime tempSelectedDate = selectedDate; // 임시로 선택된 날짜를 저장
+    DateTime tempSelectedDate = selectedDate;
 
     showModalBottomSheet(
       isScrollControlled: true,
@@ -188,7 +242,7 @@ class _CalendarState extends State<CalendarPage> {
                             color: blue_01,
                             shape: BoxShape.circle,
                           ),
-                          todayDecoration: BoxDecoration(), // 오늘 날짜에 대한 장식 제거
+                          todayDecoration: BoxDecoration(),
                         ),
                       ),
                     ),
@@ -197,10 +251,9 @@ class _CalendarState extends State<CalendarPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // '시작일' 또는 '종료일' 필드에 선택된 날짜를 표시
                           controller.text =
                           "${tempSelectedDate.year}년 ${tempSelectedDate.month}월 ${tempSelectedDate.day}일";
-                          Navigator.pop(context); // 바텀 시트 닫기
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: blue_01,
@@ -225,7 +278,15 @@ class _CalendarState extends State<CalendarPage> {
         );
       },
       backgroundColor: Colors.transparent,
-    );
+    ).then((_) {
+      setState(() {
+        if (controller == startDateController) {
+          startDateController.text = "${tempSelectedDate.year}년 ${tempSelectedDate.month}월 ${tempSelectedDate.day}일";
+        } else if (controller == endDateController) {
+          endDateController.text = "${tempSelectedDate.year}년 ${tempSelectedDate.month}월 ${tempSelectedDate.day}일";
+        }
+      });
+    });
   }
 
   @override
@@ -270,7 +331,7 @@ class _CalendarState extends State<CalendarPage> {
                                   child: CustomTextField(
                                     label: '시작일',
                                     isTime: true,
-                                    controller: startDateController, // 컨트롤러 추가
+                                    controller: startDateController,
                                     onTap: () {
                                       _showDateSelectionBottomSheet(context, startDateController);
                                     },
@@ -281,7 +342,7 @@ class _CalendarState extends State<CalendarPage> {
                                   child: CustomTextField(
                                     label: '종료일',
                                     isTime: true,
-                                    controller: endDateController, // 컨트롤러 추가
+                                    controller: endDateController,
                                     onTap: () {
                                       _showDateSelectionBottomSheet(context, endDateController);
                                     },
@@ -392,6 +453,7 @@ class _CalendarState extends State<CalendarPage> {
               selectedDate: selectedDate,
               onDaySelected: onDaySelected,
               focusedDate: focusedDate,
+              events: events,
             ),
             SizedBox(height: 10.0),
             TodayBanner(
@@ -426,6 +488,77 @@ class _CalendarState extends State<CalendarPage> {
     );
   }
 }
+
+class MainCalendar extends StatelessWidget {
+  final OnDaySelected onDaySelected;
+  final DateTime selectedDate;
+  final DateTime focusedDate;
+  final Map<DateTime, List<ScheduleCard>> events;
+
+  MainCalendar({
+    required this.onDaySelected,
+    required this.selectedDate,
+    required this.focusedDate,
+    required this.events,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TableCalendar(
+      locale: 'ko_KR',
+      onDaySelected: onDaySelected,
+      selectedDayPredicate: (date) =>
+      date.year == selectedDate.year &&
+          date.month == selectedDate.month &&
+          date.day == selectedDate.day,
+      firstDay: DateTime(1800, 1, 1),
+      lastDay: DateTime(2050, 1, 1),
+      focusedDay: focusedDate,
+      headerStyle: HeaderStyle(
+        titleCentered: true,
+        formatButtonVisible: false,
+        titleTextStyle: TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 16.0,
+        ),
+      ),
+      calendarStyle: CalendarStyle(
+        isTodayHighlighted: false,
+        selectedDecoration: BoxDecoration(
+          color: blue_01,
+          shape: BoxShape.circle,
+        ),
+        todayDecoration: BoxDecoration(), // 오늘 날짜에 대한 장식 제거
+      ),
+      calendarBuilders: CalendarBuilders(
+        markerBuilder: (context, date, events) {
+          if (events.isNotEmpty) {
+            return Positioned(
+              bottom: 1,
+              child: Text(
+                '${events.length}', // 이벤트 개수를 표시
+                style: TextStyle(color: Colors.blue, fontSize: 12.0),
+              ),
+            );
+          }
+          return null;
+        },
+      ),
+      eventLoader: (date) {
+        final dateWithoutTime = DateTime(date.year, date.month, date.day);
+        return events[dateWithoutTime] ?? [];
+      },
+    );
+  }
+}
+
+
+
+
+
+
+
+
 
 
 

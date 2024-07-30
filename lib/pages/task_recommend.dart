@@ -135,7 +135,7 @@ class _TaskRecommendState extends State<TaskRecommend> {
   }
 
   Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos?status=TODO'));
+    final response = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/priorities'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));

@@ -129,7 +129,7 @@ class _WorkloadPageState extends State<WorkloadPage> {
 
   // 서버에 작업량 데이터 보내기
   void _sendWorkload() async {
-    final baseUrl = 'https://8b21-122-36-149-213.ngrok-free.app';
+    final baseUrl = 'https://9ede-122-36-149-213.ngrok-free.app';
     final completeUrl = '$baseUrl${widget.apiUrl}'; // 기본 URL과 전달된 URL 결합
     final requestBody = {'inputTime': _controller.text};
 

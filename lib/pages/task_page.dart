@@ -28,7 +28,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   }
 
   Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=TODO'));
+    final response = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=TODO'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
@@ -38,7 +38,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     } else {
       throw Exception('Failed to load tasks');
     }
-    final response2 = await http.get(Uri.parse('https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=IN_PROGRESS'));
+    final response2 = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=IN_PROGRESS'));
 
     if (response2.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response2.bodyBytes));
@@ -49,7 +49,7 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
       throw Exception('Failed to load tasks');
     }
 
-    final response3 = await http.get(Uri.parse('https://8b21-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=DONE'));
+    final response3 = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=DONE'));
 
     if (response3.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response3.bodyBytes));
