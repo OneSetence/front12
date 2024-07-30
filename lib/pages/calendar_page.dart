@@ -11,6 +11,7 @@ import 'package:han_final/component/today_banner.dart';
 import 'package:han_final/pages/text_add.dart';
 import '../component/progress_dropdown.dart';
 import '../component/category_dropdown.dart';
+import '../component/title_textfield.dart';
 
 class CalendarPage extends StatefulWidget {
   CalendarPage({Key? key}) : super(key: key);
@@ -34,6 +35,7 @@ class _CalendarState extends State<CalendarPage> {
   final TextEditingController endDateController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController friendController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
 
   String selectedCategory = '학교';
   String selectedProgress = '시작전';
@@ -161,7 +163,7 @@ class _CalendarState extends State<CalendarPage> {
 
     final String baseUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos';
     final Map<String, dynamic> body = {
-      "title": "시간표 짜기",
+      "title": titleController.text,
       "startYear": startYear,
       "startMonth": startMonth,
       "startDay": startDay,
@@ -310,7 +312,7 @@ class _CalendarState extends State<CalendarPage> {
                   builder: (BuildContext context) {
                     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
                     return Container(
-                      height: MediaQuery.of(context).size.height / 1.35 + bottomInset,
+                      height: MediaQuery.of(context).size.height / 1.2 + bottomInset,
                       margin: const EdgeInsets.only(
                         left: 10,
                         right: 10,
@@ -328,6 +330,12 @@ class _CalendarState extends State<CalendarPage> {
                           children: [
                             Image.asset('images/bottomdown.png'),
                             SizedBox(height:12),
+                            Expanded(
+                              child: TitleTextfield(
+                                controller: titleController,
+                              ),
+                            ),
+                            SizedBox(height:10),
                             Row(
                               children: [
                                 Expanded(
