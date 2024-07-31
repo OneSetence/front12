@@ -246,7 +246,7 @@ void kakao_share() async {
     ),
     buttons: [
       Button(
-        title: '누르면 이수윤 바보됨',
+        title: '강민정',
         link: Link(
           // 카카오 디벨로퍼 web 플랫폼 도메인과 일치해야 됨
           webUrl: Uri.parse('https://www.youtube.com'),
