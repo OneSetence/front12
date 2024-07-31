@@ -70,7 +70,7 @@ class MyPageMain extends StatelessWidget {
             ],
           ),
           SizedBox(height: 32),
-          Text('예진 님의 일정은 얼마나 지켜졌을까요?'),
+          Text('강민정 님의 일정은 얼마나 지켜졌을까요?'),
           SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
