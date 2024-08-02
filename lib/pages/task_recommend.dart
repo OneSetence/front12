@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../const/colors.dart';
 import '../component/schedule_card.dart';
+import '../provider/UserName.dart';
+import 'package:provider/provider.dart';
 
 class TaskRecommend extends StatefulWidget {
   TaskRecommend({Key? key}) : super(key: key);
@@ -149,6 +151,7 @@ class _TaskRecommendState extends State<TaskRecommend> {
 
   @override
   Widget build(BuildContext context) {
+    String userName = Provider.of<UserName>(context).userName;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -169,7 +172,7 @@ class _TaskRecommendState extends State<TaskRecommend> {
         child: ListView(
           children: [
             Text(
-              '스킵이 예진 님의',
+              '한끝이 ${userName} 님의',
               style: TextStyle(
                 fontSize: 20.0,
                 color: Colors.black,
