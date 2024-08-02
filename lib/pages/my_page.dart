@@ -3,11 +3,14 @@ import 'package:han_final/pages/practice.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../const/colors.dart';
+import 'package:provider/provider.dart';
+import '../provider/UserName.dart';
 
 class MyPage extends StatelessWidget {
   MyPage({Key? key}) : super(key: key);
 
   @override
+
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -34,8 +37,13 @@ class MyPage extends StatelessWidget {
 }
 
 class MyPageMain extends StatelessWidget {
+  MyPageMain({Key? key}) : super(key: key);
+
+
+
   @override
   Widget build(BuildContext context) {
+    String userName = Provider.of<UserName>(context).userName;
     void leedong() {
       Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
         builder: (_) => NextScreen(),
@@ -61,7 +69,7 @@ class MyPageMain extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '서예진',
+                    userName,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text('Seoyejin@naver.com'),

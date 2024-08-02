@@ -86,12 +86,13 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
+          automaticallyImplyLeading: false,
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight - 8.0),
+            preferredSize: Size.fromHeight(20), // 상단 높이 조정
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0), // AppBar와 아래 콘텐츠 사이 여백
               child: Container(
-                height: kToolbarHeight - 8.0,
+                height: 48,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(8.0),

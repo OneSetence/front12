@@ -19,16 +19,16 @@ class _TextAddState extends State<TextAdd> {
     ));
   }
 
+
+
   @override
+  Widget build(BuildContext context) {@override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white_01,
       appBar: AppBar(

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'pages/task_page.dart';
 import 'pages/my_page.dart';
@@ -6,6 +7,13 @@ import '../const/colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
+// 유저 닉네임 전역 상태 관리 파일
+import 'provider/UserName.dart';
+import 'package:provider/provider.dart';
+
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
@@ -13,7 +21,15 @@ void main() async {
     nativeAppKey: '0b944cf873b74f509047c1a00350657a',
     javaScriptAppKey: 'cb81471317ab5fb1f9afe23d266c112e',
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserName()),
+      ],
+      child: const MyApp(),
+    ),
+
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -21,25 +37,136 @@ class MyApp extends StatelessWidget {
 
   static const String _title = 'Flutter Code Sample';
 
+
   @override
   Widget build(BuildContext context){
     return const MaterialApp(
       title: _title,
-      home: MyWidget(),
+      home: Login(),
+      //home: MyWidget(),
     );
   }
+}
+
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super (key: key);
+
+  @override
+  State<StatefulWidget> createState() => _Login();
+}
+
+class _Login extends State<Login> {
+
+  // 유저 닉네임 얻기
+  final TextEditingController UserNameController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: white_01,
+      body: Padding(
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 50),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Center(
+                    child: TextField(
+                      controller: UserNameController,
+                      focusNode: _focusNode,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintText: '사용할 이름을 입력해주세요!',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        counterText: '', // 기본 카운터 텍스트 제거
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: white_01),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: white_01),
+                        ),
+                      ),
+                      maxLength: 30,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: Container()), // 남은 공간 채우기
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  '30자 이내로 입력해주세요!',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Provider.of<UserName>(context, listen: false).setUserName(UserNameController.text);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyWidget())
+                  );
+                  //_sendPostRequest(); // 서버 요청 함수 호출
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: blue_01,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: Text(
+                  '다음',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: white_01,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
 
 class MyWidget extends StatefulWidget {
   const MyWidget({Key? key}) : super (key: key);
 
+
+
   @override
   State<StatefulWidget> createState() => _MyWidget();
+
 }
 
 class _MyWidget extends State<MyWidget> {
   int _selectedIndex = 0;
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -48,12 +175,13 @@ class _MyWidget extends State<MyWidget> {
   }
 
   static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget> [
     TaskPage(),
     CalendarPage(),
     MyPage(),
   ];
+
 
 
   @override
@@ -91,8 +219,4 @@ class _MyWidget extends State<MyWidget> {
       ),
     );
   }
- }
-
-
-
-
+}
