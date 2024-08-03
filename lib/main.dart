@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'pages/task_page.dart';
 import 'pages/my_page.dart';
@@ -6,13 +5,12 @@ import 'pages/calendar_page.dart';
 import '../const/colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // 유저 닉네임 전역 상태 관리 파일
 import 'provider/UserName.dart';
 import 'package:provider/provider.dart';
-
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +26,6 @@ void main() async {
       ],
       child: const MyApp(),
     ),
-
   );
 }
 
@@ -37,26 +34,23 @@ class MyApp extends StatelessWidget {
 
   static const String _title = 'Flutter Code Sample';
 
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return const MaterialApp(
       title: _title,
       home: Login(),
-      //home: MyWidget(),
     );
   }
 }
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super (key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _Login();
 }
 
 class _Login extends State<Login> {
-
   // 유저 닉네임 얻기
   final TextEditingController UserNameController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -67,6 +61,27 @@ class _Login extends State<Login> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
+  }
+
+  Future<void> _sendNickName() async {
+    final apiUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/users/sign-up';
+    final userName = UserNameController.text;
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        //headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nickName': userName, 'fcmToken': 'fcmtoken123'}),
+      );
+
+      if (response.statusCode == 200) {
+        print('닉네임 전송 성공: ${response.body}');
+      } else {
+        print('API 요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('예외 발생: $e');
+    }
   }
 
   @override
@@ -121,13 +136,13 @@ class _Login extends State<Login> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Provider.of<UserName>(context, listen: false).setUserName(UserNameController.text);
+                  await _sendNickName(); // 서버 요청 함수 호출
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyWidget())
+                    context,
+                    MaterialPageRoute(builder: (context) => MyWidget()),
                   );
-                  //_sendPostRequest(); // 서버 요청 함수 호출
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue_01,
@@ -150,23 +165,18 @@ class _Login extends State<Login> {
       ),
     );
   }
-
 }
 
-
 class MyWidget extends StatefulWidget {
-  const MyWidget({Key? key}) : super (key: key);
-
-
+  const MyWidget({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _MyWidget();
-
 }
 
 class _MyWidget extends State<MyWidget> {
   int _selectedIndex = 0;
-
+  final List<Widget> _pages = [TaskPage(), CalendarPage(), MyPage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -174,23 +184,15 @@ class _MyWidget extends State<MyWidget> {
     });
   }
 
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget> [
-    TaskPage(),
-    CalendarPage(),
-    MyPage(),
-  ];
-
-
+  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Color(0xFFFFFFFF),
         items: <BottomNavigationBarItem>[
@@ -207,11 +209,9 @@ class _MyWidget extends State<MyWidget> {
           BottomNavigationBarItem(
             icon: Image.asset("images/bottomBar/my_nonactive.png"),
             activeIcon: Image.asset("images/bottomBar/my_active.png"),
-
             label: '마이',
           ),
         ],
-
         currentIndex: _selectedIndex,
         selectedItemColor: Color(0xFF0094FF), // 선택된 항목의 라벨 색상
         unselectedItemColor: Color(0xFFACACAC),

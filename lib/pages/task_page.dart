@@ -7,6 +7,10 @@ import '../component/schedule_card.dart';
 // 일정 순서 추천 페이지 이동을 위한
 import 'package:han_final/pages/task_recommend.dart';
 
+// 유저 네임 전역 관리
+import '../provider/UserName.dart';
+import 'package:provider/provider.dart';
+
 class TaskPage extends StatefulWidget {
   TaskPage({Key? key}) : super(key: key);
 
@@ -23,12 +27,21 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    fetchTasks();
+    // 유저 네임을 가져와서 fetchTasks를 호출
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userName = Provider.of<UserName>(context, listen: false).userName;
+      fetchTasks(userName);
+    });
     _tabController = TabController(length: 3, vsync: this);
   }
 
-  Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=TODO'));
+  Future<void> fetchTasks(String userName) async {
+    final headers = {'nickName': userName};
+
+    final response = await http.get(
+      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=TODO'),
+      headers: headers,
+    );
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
@@ -38,7 +51,11 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     } else {
       throw Exception('Failed to load tasks');
     }
-    final response2 = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=IN_PROGRESS'));
+
+    final response2 = await http.get(
+      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=IN_PROGRESS'),
+      headers: headers,
+    );
 
     if (response2.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response2.bodyBytes));
@@ -49,7 +66,10 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
       throw Exception('Failed to load tasks');
     }
 
-    final response3 = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=DONE'));
+    final response3 = await http.get(
+      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=DONE'),
+      headers: headers,
+    );
 
     if (response3.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response3.bodyBytes));
@@ -187,8 +207,8 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
                   label: Text(
                     '일정 순서를 추천 받아요!',
                     style: TextStyle(
-                        fontSize: 15.0,
-                        color: white_01
+                      fontSize: 15.0,
+                      color: white_01,
                     ), // 텍스트 크기 조정
                   ),
                   icon: Icon(
@@ -210,3 +230,4 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 }
+
