@@ -14,121 +14,7 @@ class TaskRecommend extends StatefulWidget {
 }
 
 class _TaskRecommendState extends State<TaskRecommend> {
-  List<ScheduleCard> tasks = [
-    // 더미 데이터
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-    ScheduleCard(
-      start_year: 2024,
-      start_month: 7,
-      start_day: 30,
-      start_hour: 9,
-      start_minutes: 0,
-      end_year: 2024,
-      end_month: 7,
-      end_day: 30,
-      end_hour: 10,
-      end_minutes: 0,
-      content: '더미 일정 - 회의',
-      state: 'TODO',
-    ),
-
-  ];
+  List<ScheduleCard> tasks = [];
 
   @override
   void initState() {
@@ -137,7 +23,11 @@ class _TaskRecommendState extends State<TaskRecommend> {
   }
 
   Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/priorities'));
+    String userName = Provider.of<UserName>(context, listen: false).userName;
+    final response = await http.get(
+      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/priorities'),
+      headers: {'nickName': userName},
+    );
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
@@ -206,6 +96,7 @@ class _TaskRecommendState extends State<TaskRecommend> {
     );
   }
 }
+
 
 
 

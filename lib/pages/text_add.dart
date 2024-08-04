@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../const/colors.dart';
 import 'package:han_final/pages/workload_page.dart';
+import '../provider/UserName.dart';
+import 'package:provider/provider.dart';
 
 class TextAdd extends StatefulWidget {
   @override
@@ -19,16 +21,16 @@ class _TextAddState extends State<TextAdd> {
     ));
   }
 
-
-
   @override
-  Widget build(BuildContext context) {@override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
   }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white_01,
       appBar: AppBar(
@@ -122,11 +124,15 @@ class _TextAddState extends State<TextAdd> {
   void _sendPostRequest() async {
     final apiUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/texts';
     final requestBody = {'text': _controller.text};
+    String userName = Provider.of<UserName>(context, listen: false).userName;
 
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'nickName': userName,
+        },
         body: jsonEncode(requestBody),
       );
 
