@@ -39,42 +39,16 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     final headers = {'nickName': userName};
 
     final response = await http.get(
-      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=TODO'),
+      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos'),
       headers: headers,
     );
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       setState(() {
-        startTask = jsonResponse.map((task) => ScheduleCard.fromJson(task)).toList();
-      });
-    } else {
-      throw Exception('Failed to load tasks');
-    }
-
-    final response2 = await http.get(
-      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=IN_PROGRESS'),
-      headers: headers,
-    );
-
-    if (response2.statusCode == 200) {
-      List<dynamic> jsonResponse = json.decode(utf8.decode(response2.bodyBytes));
-      setState(() {
-        ingTask = jsonResponse.map((task) => ScheduleCard.fromJson(task)).toList();
-      });
-    } else {
-      throw Exception('Failed to load tasks');
-    }
-
-    final response3 = await http.get(
-      Uri.parse('https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos/statuses?status=DONE'),
-      headers: headers,
-    );
-
-    if (response3.statusCode == 200) {
-      List<dynamic> jsonResponse = json.decode(utf8.decode(response3.bodyBytes));
-      setState(() {
-        endTask = jsonResponse.map((task) => ScheduleCard.fromJson(task)).toList();
+        startTask = jsonResponse.where((task) => task['status'] == 'TODO').map((task) => ScheduleCard.fromJson(task)).toList();
+        ingTask = jsonResponse.where((task) => task['status'] == 'IN_PROGRESS').map((task) => ScheduleCard.fromJson(task)).toList();
+        endTask = jsonResponse.where((task) => task['status'] == 'DONE').map((task) => ScheduleCard.fromJson(task)).toList();
       });
     } else {
       throw Exception('Failed to load tasks');
@@ -166,32 +140,50 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
         body: TabBarView(
           controller: _tabController,
           children: <Widget>[
-            ListView.builder(
-              itemCount: startTask.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0), // 리스트 아이템 사이 여백
-                  child: startTask[index],
-                );
+            RefreshIndicator(
+              onRefresh: () async {
+                final userName = Provider.of<UserName>(context, listen: false).userName;
+                await fetchTasks(userName);
               },
+              child: ListView.builder(
+                itemCount: startTask.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // 리스트 아이템 사이 여백
+                    child: startTask[index],
+                  );
+                },
+              ),
             ),
-            ListView.builder(
-              itemCount: ingTask.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0), // 리스트 아이템 사이 여백
-                  child: ingTask[index],
-                );
+            RefreshIndicator(
+              onRefresh: () async {
+                final userName = Provider.of<UserName>(context, listen: false).userName;
+                await fetchTasks(userName);
               },
+              child: ListView.builder(
+                itemCount: ingTask.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // 리스트 아이템 사이 여백
+                    child: ingTask[index],
+                  );
+                },
+              ),
             ),
-            ListView.builder(
-              itemCount: endTask.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0), // 리스트 아이템 사이 여백
-                  child: endTask[index],
-                );
+            RefreshIndicator(
+              onRefresh: () async {
+                final userName = Provider.of<UserName>(context, listen: false).userName;
+                await fetchTasks(userName);
               },
+              child: ListView.builder(
+                itemCount: endTask.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // 리스트 아이템 사이 여백
+                    child: endTask[index],
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -230,4 +222,3 @@ class _TaskPageState extends State<TaskPage> with SingleTickerProviderStateMixin
     );
   }
 }
-

@@ -12,6 +12,8 @@ import 'package:han_final/pages/text_add.dart';
 import '../component/progress_dropdown.dart';
 import '../component/category_dropdown.dart';
 import '../component/title_textfield.dart';
+import '../provider/UserName.dart';
+import 'package:provider/provider.dart';
 
 class CalendarPage extends StatefulWidget {
   CalendarPage({Key? key}) : super(key: key);
@@ -48,12 +50,15 @@ class _CalendarState extends State<CalendarPage> {
       statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
     ));
-    _fetchAllSchedules();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userName = Provider.of<UserName>(context, listen: false).userName;
+      _fetchAllSchedules(userName);
+    });
   }
 
-  Future<void> _fetchAllSchedules() async {
+  Future<void> _fetchAllSchedules(String userName) async {
     final String baseUrl = 'https://9ede-122-36-149-213.ngrok-free.app/api/v1/todos';
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse(baseUrl), headers: {'nickName': userName});
 
     if (response.statusCode == 200) {
       try {
@@ -143,7 +148,7 @@ class _CalendarState extends State<CalendarPage> {
     }
   }
 
-  Future<void> onSavePressed() async {
+  Future<void> onSavePressed(String userName) async {
     final int startHour = 13;
     final int startMinute = 45;
     final int endHour = 15;
@@ -185,6 +190,7 @@ class _CalendarState extends State<CalendarPage> {
       Uri.parse(baseUrl),
       headers: {
         'Content-Type': 'application/json',
+        'nickName': userName,
       },
       body: json.encode(body),
     );
@@ -192,7 +198,7 @@ class _CalendarState extends State<CalendarPage> {
     if (response.statusCode == 201) {
       print('Schedule created successfully');
       Navigator.pop(context);
-      _fetchAllSchedules();
+      _fetchAllSchedules(userName);
     } else {
       print('Failed to create schedule, status code: ${response.statusCode}');
     }
@@ -296,6 +302,9 @@ class _CalendarState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 여기서 UserName을 가져옴
+    final userName = Provider.of<UserName>(context).userName;
+
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: Stack(
@@ -422,7 +431,9 @@ class _CalendarState extends State<CalendarPage> {
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: onSavePressed,
+                                onPressed: () {
+                                  onSavePressed(userName);
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: blue_01,
                                   shape: RoundedRectangleBorder(
@@ -578,18 +589,4 @@ class MainCalendar extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
