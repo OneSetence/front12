@@ -197,8 +197,7 @@ class _CalendarState extends State<CalendarPage> {
 
     if (response.statusCode == 201) {
       print('Schedule created successfully');
-      Navigator.pop(context);
-      _fetchAllSchedules(userName);
+      Navigator.pop(context, true); // true 값을 반환하여 pop
     } else {
       print('Failed to create schedule, status code: ${response.statusCode}');
     }
@@ -314,8 +313,8 @@ class _CalendarState extends State<CalendarPage> {
                 Alignment.bottomRight.x, Alignment.bottomRight.y - 0.2),
             child: FloatingActionButton(
               backgroundColor: blue_01,
-              onPressed: () {
-                showModalBottomSheet(
+              onPressed: () async {
+                bool? result = await showModalBottomSheet(
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
@@ -456,6 +455,10 @@ class _CalendarState extends State<CalendarPage> {
                   },
                   backgroundColor: Colors.transparent,
                 );
+
+                if (result == true) {
+                  _fetchAllSchedules(userName); // 일정 갱신
+                }
               },
               child: Icon(
                 Icons.add,
@@ -468,12 +471,16 @@ class _CalendarState extends State<CalendarPage> {
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
               backgroundColor: blue_01,
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
+              onPressed: () async {
+                bool? result = await Navigator.of(context, rootNavigator: true).push(
                   MaterialPageRoute(
                     builder: (_) => TextAdd(),
                   ),
                 );
+
+                if (result == true) {
+                  _fetchAllSchedules(userName); // 일정 갱신
+                }
               },
               tooltip: "문장 등록",
               child: Icon(

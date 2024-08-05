@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../const/colors.dart';
-import 'package:han_final/pages/calendar_page.dart';
 import '../provider/UserName.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +27,9 @@ class _WorkloadPageState extends State<WorkloadPage> {
     });
   }
 
-  void calender_main() {
-    Navigator.pop(context);
-    Navigator.pop(context);
+  void calendarMain() {
+    Navigator.pop(context); // 이전 페이지로 이동
+    Navigator.pop(context, true); // true 값을 반환하며 캘린더 페이지로 이동
   }
 
   @override
@@ -108,7 +107,7 @@ class _WorkloadPageState extends State<WorkloadPage> {
               child: ElevatedButton(
                 onPressed: () {
                   _sendWorkload(userName); // 서버 요청 API 연동
-                  calender_main(); // 완료 후 캘린더 main 페이지로 이동
+                  calendarMain();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue_01,
@@ -150,6 +149,7 @@ class _WorkloadPageState extends State<WorkloadPage> {
 
       if (response.statusCode == 200) {
         print('작업량 전송 성공: ${response.body}');
+        //calendarMain(); // 성공 시 캘린더 페이지로 이동
       } else {
         print('API 요청 실패: ${response.statusCode}');
       }
@@ -158,5 +158,6 @@ class _WorkloadPageState extends State<WorkloadPage> {
     }
   }
 }
+
 
 
