@@ -70,6 +70,7 @@ class _Login extends State<Login> {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
         //headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'nickName': userName, 'fcmToken': 'fcmtoken123'}),
       );
