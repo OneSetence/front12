@@ -50,6 +50,7 @@ dependencies:
   #joson_annotation: ^4.0.1
   #package_info_plus: ^1.0.4
   platform: ^3.0.0
+  firebase_core: ^2.24.2
 
 
 

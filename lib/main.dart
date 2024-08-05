@@ -12,8 +12,14 @@ import 'dart:convert';
 import 'provider/UserName.dart';
 import 'package:provider/provider.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await initializeDateFormatting();
   KakaoSdk.init(
     nativeAppKey: '0b944cf873b74f509047c1a00350657a',
