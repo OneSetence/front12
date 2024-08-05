@@ -51,6 +51,9 @@ dependencies:
   #package_info_plus: ^1.0.4
   platform: ^3.0.0
   firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.10
+  googleapis_auth: ^1.6.0
+  flutter_local_notifications: ^17.2.1+2
 
 
 
@@ -81,6 +84,7 @@ flutter:
     - images/bottomBar/my_active.png
     - images/bottomBar/calendar_nonactive.png
     - images/bottomBar/calendar_active.png
+    - assets/data/
 
 
   # To add assets to your application, add an assets section, like this:

@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'pages/task_page.dart';
 import 'pages/my_page.dart';
@@ -7,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'PushNotification.dart';
 
 // 유저 닉네임 전역 상태 관리 파일
 import 'provider/UserName.dart';
@@ -15,11 +17,61 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+// 백그라운드 핸들러 함수와 메세지 상호작용 정의하는 함수
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (message.notification != null) {
+    print('Notification Received!');
+  }
+}
+
+// 푸시 알림 메시지와 상호작용 정의
+Future<void> setupInteractedMessage() async {
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+  if (initialMessage != null) {
+    _handleMessage(initialMessage);
+  }
+  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+}
+
+void _handleMessage(RemoteMessage message) {
+  Future.delayed(const Duration(seconds:1), () {
+    navigatorKey.currentState!.pushNamed("m/essage", arguments: message);
+  });
+}
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // FCM 푸시 알림 관련 초기화
+  PushNotification.init();
+  // 백그라운드 알림 수신 리스너
+  PushNotification.localNotiInit();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    String payloadData = jsonEncode(message.data);
+    print("got a message in foreground");
+    if (message.notification != null) {
+      PushNotification.showSimpleNotification(
+        title: message.notification!.title!,
+        body: message.notification!.body!,
+        payload: payloadData
+      );
+    }
+  });
+
+  setupInteractedMessage();
+
   await initializeDateFormatting();
   KakaoSdk.init(
     nativeAppKey: '0b944cf873b74f509047c1a00350657a',
