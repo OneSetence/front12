@@ -99,6 +99,7 @@ class _Login extends State<Login> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  SizedBox(height: 120),
                   Center(
                     child: TextField(
                       controller: UserNameController,
